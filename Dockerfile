@@ -1,5 +1,6 @@
 From node:10
 
+WORKDIR /HomePage/
 
 # Install app dependencies
 COPY package*.json ./
