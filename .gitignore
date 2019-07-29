@@ -1,3 +1,9 @@
+# Compiled
+dist/
+
+# Typescript def
+typings/
+
 # Logs
 logs
 *.log
