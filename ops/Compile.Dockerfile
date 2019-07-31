@@ -3,6 +3,8 @@ ENV HTTP_PORT=80 HTTPS_PORT=443
 
 WORKDIR /HomePage/
 
+RUN ls -a
+
 # Install app dependencies
 COPY package*.json ./
  
