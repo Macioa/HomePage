@@ -9,7 +9,7 @@ COPY package*.json ./
 
 RUN npm i --production
 
-COPY dist index.js index.html .
+COPY dist index.js index.html ./
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
 CMD [ "npm", "start" ]
