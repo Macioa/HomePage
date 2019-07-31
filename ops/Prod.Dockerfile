@@ -10,9 +10,9 @@ COPY package*.json ./
 
 RUN npm i --production
 
-RUN ls -a && ls .. -a && ls ../.. -a
+RUN ls -a && ls .. -a && ls /codefresh/volume -a
 
-COPY dist index.js index.html ./
+RUN cd $DIST_DIR && cp dist index.js index.html ./
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
 CMD [ "npm", "start" ]
