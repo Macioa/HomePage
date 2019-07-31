@@ -15,4 +15,4 @@ COPY . .
 RUN npm run-script build
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
-CMD [ "node", "server" ]
+CMD [ "npm", "start" ]

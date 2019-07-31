@@ -1,3 +1,5 @@
+const HtmlWebPackPlugin = require('html-webpack-plugin')
+
 module.exports = {
   mode: 'production',
 
@@ -5,7 +7,6 @@ module.exports = {
   devtool: 'source-map',
 
   resolve: {
-    // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.tsx']
   },
 
@@ -36,5 +37,12 @@ module.exports = {
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM'
-  }
+  },
+
+  plugins: [
+    new HtmlWebPackPlugin({
+      template: './index.html',
+      filename: './index.html'
+    })
+  ]
 }

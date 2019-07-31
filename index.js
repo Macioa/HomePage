@@ -1,21 +1,25 @@
-const fs = require('fs')
-const http = require('http'),
-  HTTP_PORT = process.env.HTTP_PORT || 80,
+const fs = require('fs'),
+  path = require('path'),
+  http = require('http'),
   https = require('https'),
-  HTTPS_PORT = process.env.HTTPS_PORT || 443
-const privatekey = process.env.PRIVATEKEY || null,
-  certificate = process.env.CERTIFICATE || null
+  express = require('express')
+const HTTP_PORT = process.env.HTTP_PORT || 80,
+  HTTPS_PORT = process.env.HTTPS_PORT || 443,
+  PRIV_KEY = process.env.PRIVATEKEY || null,
+  CERT = process.env.CERTIFICATE || null,
+  ROOT = process.env.ROOT_PATH || path.join(__dirname, 'dist/')
 
-const credentials = { key: privatekey, cert: certificate }
-
-const express = require('express')
+const credentials = { key: PRIV_KEY, cert: CERT }
 const app = express()
 
-app.get('*', (req, res, next) => res.send('Hello'))
+app.use(express.static(ROOT))
+app.get('*', (req, res, next) =>
+  res.sendFile('index.html', err => console.error)
+)
 
 const httpServer = http.createServer(app)
 const httpsServer =
-  privatekey && certificate ? https.createServer(credentials, app) : null
+  PRIV_KEY && CERT ? https.createServer(credentials, app) : null
 
 httpServer.listen(HTTP_PORT, err =>
   console.log(err || `Http server listening on ${HTTP_PORT}`)

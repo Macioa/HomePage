@@ -1,8 +1,8 @@
 # Compiled
-dist/
+dist/*
 
 # Typescript def
-typings/
+typings
 
 # Logs
 logs

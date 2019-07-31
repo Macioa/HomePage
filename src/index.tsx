@@ -3,7 +3,8 @@ import * as ReactDOM from 'react-dom'
 
 import { Hello } from './components/hello'
 
-ReactDOM.render(
-  <Hello compiler='TypeScript' framework='React' />,
-  document.getElementById('example')
-)
+const Root = document.getElementById('root')
+console.log(Root)
+Root
+  ? ReactDOM.render(<Hello compiler='TypeScript' framework='React' />, Root)
+  : false
