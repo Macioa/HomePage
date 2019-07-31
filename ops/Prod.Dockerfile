@@ -10,7 +10,7 @@ COPY package*.json ./
 
 RUN npm i --production
 
-RUN ls -a && ls .. -a && ls /codefresh/volume -a
+RUN ls -a && ls .. -a && ls /codefresh/ -a
 
 RUN cd $DIST_DIR && cp dist index.js index.html ./
 
