@@ -1,10 +1,11 @@
-FROM node:10
+FROM alpine:3.9
 
-ENV HTTP_PORT=80 HTTPS_PORT=443
+ENV HTTP_PORT=80 HTTPS_PORT=443 CERTIFICATE="" PRIV_KEY=""
 
 WORKDIR /HomePage/
 
-# Install app dependencies
+RUN apk add --update npm
+
 COPY package*.json ./
 
 RUN npm i --production

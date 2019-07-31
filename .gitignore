@@ -1,5 +1,6 @@
 # Compiled
-dist/*
+#dist
+#dist/*
 
 # Typescript def
 typings
