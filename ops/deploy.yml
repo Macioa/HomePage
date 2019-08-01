@@ -6,17 +6,17 @@ metadata:
   selfLink: /api/v1/namespaces/default/services/web-server
   uid: 5fb00522-b47f-11e9-addd-42010a80015e
   resourceVersion: '197507'
-  creationTimestamp: '2019-08-01T17:11:17Z'
-  labels:
-    io.codefresh.auto-generated: af05397c-c21b-48cd-8b09-9d82c08e01b8
-    io.codefresh.generated-at: '1564679477058'
 spec:
   ports:
-    - name: http1
+    - name: http
       protocol: TCP
       port: 80
       targetPort: 80
       nodePort: 32658
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
   selector:
     app: web-server
   clusterIP: 10.97.0.199
@@ -35,11 +35,8 @@ metadata:
   uid: 5fc3b1c5-b47f-11e9-addd-42010a80015e
   resourceVersion: '197518'
   generation: 1
-  creationTimestamp: '2019-08-01T17:11:17Z'
   labels:
     app: web-server
-    io.codefresh.auto-generated: 5169b6f0-9469-4123-b44e-a5d42f2c1f14
-    io.codefresh.generated-at: '1564679477182'
   annotations:
     deployment.kubernetes.io/revision: '1'
 spec:
@@ -47,17 +44,11 @@ spec:
   selector:
     matchLabels:
       app: web-server
-      io.codefresh.auto-generated: 5169b6f0-9469-4123-b44e-a5d42f2c1f14
-      io.codefresh.generated-at: '1564679477182'
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: web-server
-        io.codefresh.auto-generated: 5169b6f0-9469-4123-b44e-a5d42f2c1f14
-        io.codefresh.generated-at: '1564679477182'
-      annotations:
-        forceRedeployUniqId: 746b6c3d-6ff5-4937-b738-57b4b0291c52
     spec:
       containers:
         - name: web-server
@@ -93,7 +84,5 @@ status:
   conditions:
     - type: Available
       status: 'False'
-      lastUpdateTime: '2019-08-01T17:11:17Z'
-      lastTransitionTime: '2019-08-01T17:11:17Z'
       reason: MinimumReplicasUnavailable
       message: Deployment does not have minimum availability.
