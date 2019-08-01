@@ -8,9 +8,11 @@ RUN apk add --update npm
 
 COPY package*.json ./
 
-RUN npm i --production
+RUN npm i --production && mkdir - p dist
 
-COPY dist index.js index.html ./
+COPY index.js index.html ./
+
+copy dist/* dist/
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
-CMD [ "npm", "start" ]
+CMD [ "nohup", "npm", "start" ]
