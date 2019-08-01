@@ -22,9 +22,11 @@ const httpsServer =
   PRIV_KEY && CERT ? https.createServer(credentials, app) : null
 
 httpServer.listen(HTTP_PORT, err =>
-  console.log(err || `Http server listening on ${HTTP_PORT}`)
+  console.log(err ? `${ROOT}\n${err}` : `Http server listening on ${HTTP_PORT}`)
 )
 if (httpsServer)
   httpsServer.listen(HTTPS_PORT, err =>
-    console.log(err || `Https server listening on ${HTTPS_PORT}`)
+    console.log(
+      err ? `${ROOT}\n${err}` : `Https server listening on ${HTTPS_PORT}`
+    )
   )
