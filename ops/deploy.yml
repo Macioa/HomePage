@@ -19,7 +19,6 @@ spec:
       targetPort: 443
   selector:
     app: web-server
-  clusterIP: 10.97.0.199
   type: LoadBalancer
   sessionAffinity: None
   externalTrafficPolicy: Cluster
