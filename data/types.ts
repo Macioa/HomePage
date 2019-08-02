@@ -8,12 +8,15 @@ interface Phone {
 }
 
 interface Address {
-  street: String
-  city: String
-  state: String
-  country: String
-  zip: Number
+  long?: {
+    street: String
+    city: String
+    state: String
+    country: String
+    zip: Number
+  }
   short?: String
+  remote?: Boolean
 }
 
 interface Name {
@@ -21,6 +24,8 @@ interface Name {
   middle?: String
   last: String
 }
+
+//   Advanced
 
 interface Person {
   name: Name
@@ -47,7 +52,54 @@ interface Person {
   }
 }
 
-//   Advanced
+interface Education {
+  institution: String
+  location?: Address
+  date: {
+    start: Date
+    end: Date
+  }
+  coursework?: [String]
+  desc?: String
+}
+
+interface Certification {
+  name: String
+  institution: String
+  location: Address
+  date: Date
+  desc?: String
+}
+
+interface Skill {
+  name: String
+  start: Date
+  proficiency: Number
+  bullets?: [{ date: { start: Date; end: Date }; desc: String }]
+  desc?: String
+}
+
+interface Experience {
+  position: String
+  institution: String
+  location: Address
+  date: {
+    start: Date
+    end: Date
+  }
+  bullets?: [{ desc: String; skills?: [String]; moreinfo?: Boolean }]
+  desc?: String
+}
+
+interface Project {
+  name: String
+  institution?: String
+  link?: String
+  desc?: String
+  date?: Date
+}
+
+//   Global
 
 interface General {
   person: Person
@@ -56,4 +108,8 @@ interface General {
     short: String
     long: String
   }
+  references?: [Person]
+  education?: [Education]
+  skills?: [Skill]
+  projects?: [Project]
 }
