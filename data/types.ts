@@ -1,13 +1,24 @@
+class Obj {
+  constructor(obj = {}) {
+    Object.assign(this, obj)
+  }
+}
+
 //   Primative
 
-interface Phone {
+export class Phone extends Obj {
   country?: Number
   area: Number
   line1: Number
   line2: Number
+  get(seperator = '-'): String {
+    return `${this.country ? `+${this.country} ` : ''}${this.area}${seperator}${
+      this.line1
+    }${seperator}${this.line2}`
+  }
 }
 
-interface Address {
+export class Address extends Obj {
   long?: {
     street: String
     city: String
@@ -17,25 +28,40 @@ interface Address {
   }
   short?: String
   remote?: Boolean
+  get(request = 'short', res = ''): String {
+    switch (request) {
+      case 'long':
+        let { street, city, state, country, zip } = this.long
+        return `${street}\n${city}, ${state}, ${country}, ${zip}`
+      case 'short:':
+        return this.short || this.get('long')
+    }
+  }
 }
 
-interface Name {
+export class Name extends Obj {
   first: String
   middle?: String
   last: String
+  get() {
+    return Object.values(this)
+      .filter(v => typeof v === 'string')
+      .join(' ')
+  }
 }
 
 //   Advanced
 
-interface Person {
+export interface Person {
   name: Name
+  desc: String
   email: {
     primary: String
-    secondary?: [String]
+    secondary?: String[]
   }
   phone: {
     primary: Phone
-    secondary?: [Phone]
+    secondary?: Phone[]
   }
   location?: {
     address?: Address
@@ -44,72 +70,72 @@ interface Person {
   linkedin?: String
   website?: {
     primary: String
-    secondary?: [String]
+    secondary?: String[]
   }
   git?: {
     primary: String
-    secondary?: [String]
+    secondary?: String[]
   }
 }
 
-interface Education {
+export interface Education {
   institution: String
+  program?: String
   location?: Address
   date: {
-    start: Date
-    end: Date
+    start: String
+    end: String
   }
-  coursework?: [String]
+  coursework?: String[]
   desc?: String
 }
 
-interface Certification {
+export interface Certification {
   name: String
   institution: String
   location: Address
-  date: Date
+  date: String
   desc?: String
 }
 
-interface Skill {
+export interface Skill {
   name: String
-  start: Date
+  start: String
   proficiency: Number
-  bullets?: [{ date: { start: Date; end: Date }; desc: String }]
+  bullets?: { date: { start: String; end: String }; desc: String }[]
   desc?: String
 }
 
-interface Experience {
+export interface Experience {
   position: String
   institution: String
   location: Address
   date: {
-    start: Date
-    end: Date
+    start: String
+    end: String
   }
-  bullets?: [{ desc: String; skills?: [String]; moreinfo?: Boolean }]
+  bullets?: { desc: String; skills?: String[]; moreinfo?: Boolean }[]
   desc?: String
 }
 
-interface Project {
+export interface Project {
   name: String
   institution?: String
   link?: String
   desc?: String
-  date?: Date
+  date?: String
 }
 
 //   Global
 
-interface General {
+export interface General {
   person: Person
-  desc: String
   objective: {
     short: String
     long: String
   }
-  references?: [Person]
-  education?: [Education]
-  skills?: [Skill]
-  projects?: [Project]
+  references?: Person[]
+  education?: Education[]
+  skills?: Skill[]
+  projects?: Project[]
 }
