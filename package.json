@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack",
-    "dev": "rm -rf dist && npx webpack && node index",
+    "build": "npx webpack & npx webpack",
+    "dev": "rm -rf dist && npm run-script build && node index",
     "start": "node index"
   },
   "repository": {
@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/Macioa/HomePage#readme",
   "dependencies": {
-    "@types/node": "^12.6.9",
     "express": "^4.17.1"
   },
   "devDependencies": {

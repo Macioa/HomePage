@@ -26,9 +26,8 @@ module.exports = {
         include: path.join(__dirname, 'src'),
         use: [
           'style-loader',
-          // 'css-loader',
           {
-            loader: 'typings-for-css-modules-loader',
+            loader: 'typings-for-css-modules-loader?silent',
             options: { modules: true, namedExport: true }
           }
         ]
