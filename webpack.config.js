@@ -27,7 +27,7 @@ module.exports = {
         use: [
           'style-loader',
           {
-            loader: 'typings-for-css-modules-loader?silent',
+            loader: 'typings-for-css-modules-loader',
             options: { modules: true, namedExport: true }
           }
         ]

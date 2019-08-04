@@ -14,6 +14,7 @@ RUN npm i
 COPY . .
 
 # Compile
+RUN npm run-script prep
 RUN npm run-script build 
 RUN ls -a
 

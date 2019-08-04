@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run-script typings && npx webpack & exit 0 && npx webpack ",
+    "prep": "npm run-script typings && npx webpack & exit 0",
+    "build": "npx webpack ",
     "typings": "npm install typings -g && typings install dt~react dt~react-dom",
     "dev": "rm -rf dist && npm run-script build && node index",
     "start": "node index"
