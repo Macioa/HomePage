@@ -8,7 +8,7 @@ RUN ls -a
 # Install app dependencies
 COPY package*.json ./
  
-RUN npm install typings -g && typings install dt~react dt~react-dom && npm i
+RUN npm i
  
 # Bundle app source
 COPY . .
