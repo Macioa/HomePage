@@ -10,7 +10,7 @@ COPY package*.json ./
 
 RUN npm i --production && mkdir - p dist
 
-COPY index.js index.html ./
+COPY index.js ./
 
 copy dist/* dist/
 
