@@ -14,8 +14,7 @@ RUN npm i
 COPY . .
 
 # Compile
-RUN npm run-script prep
-RUN npm run-script build 
+RUN npm run-script init
 RUN ls -a
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
