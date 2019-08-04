@@ -100,9 +100,12 @@ export interface Certification {
 
 export interface Skill {
   name: String
-  start: String
+  start?: String
   proficiency: Number
-  bullets?: { date: { start: String; end: String }; desc: String }[]
+  priority?: Number
+  totalyrs?: Number
+  bullets?: { date: string; desc: String }[]
+  lastused?: String
   desc?: String
 }
 
@@ -135,7 +138,9 @@ export interface General {
     long: String
   }
   references?: Person[]
+  experience?: Experience[]
   education?: Education[]
+  certifications?: Certification[]
   skills?: Skill[]
   projects?: Project[]
 }

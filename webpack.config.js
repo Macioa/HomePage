@@ -38,7 +38,13 @@ module.exports = {
     react: 'React',
     'react-dom': 'ReactDOM'
   },
-
+  resolve: {
+    alias: {
+      Components: path.resolve(__dirname, 'src/components'),
+      Pages: path.resolve(__dirname, 'src/pages'),
+      Data: path.resolve(__dirname, 'data')
+    }
+  },
   plugins: [
     new HtmlWebPackPlugin({
       template: './index.html',
