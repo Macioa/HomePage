@@ -14,7 +14,7 @@ RUN npm i
 COPY . .
 
 # Compile
-RUN npm run-script build
+RUN npm run-script build && ls -a
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
 CMD [ "npm", "start" ]
