@@ -1,6 +1,7 @@
 # Compiled
 dist
 dist/*
+*.d.ts
 
 # Typescript def
 typings

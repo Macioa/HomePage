@@ -1,10 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import { Hello } from './components/hello'
+import { CV } from './pages/cv'
+import './styles.css'
 
 const Root = document.getElementById('root')
-console.log(Root)
-Root
-  ? ReactDOM.render(<Hello compiler='TypeScript' framework='React' />, Root)
-  : false
+Root ? ReactDOM.render(<CV />, Root) : false

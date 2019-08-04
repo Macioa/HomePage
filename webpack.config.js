@@ -1,5 +1,5 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin')
-
+const path = require('path')
 module.exports = {
   mode: 'production',
 
@@ -7,7 +7,7 @@ module.exports = {
   devtool: 'source-map',
 
   resolve: {
-    extensions: ['.ts', '.tsx']
+    extensions: ['.js', '.ts', '.tsx']
   },
 
   module: {
@@ -21,7 +21,18 @@ module.exports = {
           }
         ]
       },
-      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+      {
+        test: /\.css$/,
+        include: path.join(__dirname, 'src'),
+        use: [
+          'style-loader',
+          // 'css-loader',
+          {
+            loader: 'typings-for-css-modules-loader',
+            options: { modules: true, namedExport: true }
+          }
+        ]
+      },
       {
         enforce: 'pre',
         test: /\.js$/,
@@ -38,16 +49,9 @@ module.exports = {
     react: 'React',
     'react-dom': 'ReactDOM'
   },
-  resolve: {
-    alias: {
-      Components: path.resolve(__dirname, 'src/components'),
-      Pages: path.resolve(__dirname, 'src/pages'),
-      Data: path.resolve(__dirname, 'data')
-    }
-  },
   plugins: [
     new HtmlWebPackPlugin({
-      template: './index.html',
+      template: './src/index.html',
       filename: './index.html'
     })
   ]
