@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prep": "npx webpack ||:",
+    "prep": "npx webpack --silent||true",
     "build": "npx webpack ",
     "typings": "npm install typings -g && typings install dt~react dt~react-dom",
     "init": "npm i && npm run-script typings && npm run-script prep && npm run-script build",
-    "dev": "rm -rf dist && npm run-script build && node index",
+    "dev": "rm -rf dist src/*.d.ts && npm run-script prep && npm run-script build && node index",
     "start": "node index"
   },
   "repository": {
