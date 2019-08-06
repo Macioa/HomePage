@@ -20,7 +20,7 @@ COPY index.js ./
 
 copy dist/* dist/
 
-RUN echo $CHALLENGE && echo $CERT_SECRET
+RUN echo $CHALLENGE && echo "$CERTSECRET"
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
-CMD [ "nohup", "npm", "start" ]
+CMD [ "nohup", "CHALLENGE=$CHALLENGE","CERTSECRET=$CERTSECRET","npm", "start" ]
