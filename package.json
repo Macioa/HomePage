@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack --silent || true & npx webpack -p",
+    "build": "npx webpack --silent || true && npx webpack -p",
     "dev": "rm -rf dist && find src -name *.d.ts -type f -delete && npm run-script build && npm start",
     "start": "node index || npm install && npm run-script build && node index"
   },
