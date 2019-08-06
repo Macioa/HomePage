@@ -16,6 +16,8 @@ const app = express()
 
 app.use(express.static(ROOT))
 
+if (fs.existsSync('./.env')) require('dotenv').config()
+
 if (CHALLENGE)
   app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) =>
     res.send(CERT_SECRET)

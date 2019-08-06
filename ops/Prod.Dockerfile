@@ -22,5 +22,7 @@ copy dist/* dist/
 
 RUN echo $CHALLENGE && echo "$CERTSECRET"
 
+RUN printenv>.env
+
 EXPOSE $HTTP_PORT $HTTPS_PORT
-CMD ["sh", "-c", "CHALLENGE=${CHALLENGE} CERTSECRET=${CERTSECRET} node index"]
+CMD ["sh", "-c", "node index"]
