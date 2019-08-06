@@ -3,6 +3,7 @@ const fs = require('fs'),
   http = require('http'),
   https = require('https'),
   express = require('express')
+if (fs.existsSync('./.env')) require('dotenv').config()
 const HTTP_PORT = process.env.HTTP_PORT || 80,
   HTTPS_PORT = process.env.HTTPS_PORT || 443,
   PRIV_KEY = process.env.PRIVATEKEY || null,
@@ -16,13 +17,11 @@ const app = express()
 
 app.use(express.static(ROOT))
 
-if (fs.existsSync('./.env')) require('dotenv').config()
-
 if (CHALLENGE)
   app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) =>
     res.send(CERT_SECRET)
   )
-
+app.get('/test', (req, res, next) => res.send('confirmed'))
 app.get('*', (req, res, next) =>
   res.sendFile('./index.html', err => console.error)
 )
