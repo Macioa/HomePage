@@ -24,7 +24,7 @@ copy dist/* dist/
 RUN echo $CHALLENGE && echo "$CERTSECRET"
 
 RUN printenv>.env 
-RUN $LETSENCRYPT>letsencrypt.tar.gz
+RUN echo $LETSENCRYPT>letsencrypt.tar.gz
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
 
