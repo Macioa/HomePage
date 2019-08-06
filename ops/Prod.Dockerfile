@@ -21,11 +21,10 @@ COPY index.js ./
 
 copy dist/* dist/
 
-RUN echo $CHALLENGE && echo "$CERTSECRET"
+RUN echo $CERTIFICATE && echo $PRIV_KEY
 
 RUN printenv>.env 
-RUN echo $LETSENCRYPT>letsencrypt.tar.gz
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
 
-CMD ["sh", "-c", "sleep 3600"]
+CMD ["sh", "-c", "nohup node index"]
