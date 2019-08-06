@@ -25,4 +25,4 @@ RUN echo $CHALLENGE && echo "$CERTSECRET"
 RUN printenv>.env
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
-CMD ["sh", "-c", "node index"]
+CMD ["sh", "-c", "nohup node index"]
