@@ -16,6 +16,7 @@ const credentials = { key: PRIV_KEY, cert: CERT }
 const app = express()
 
 app.use(express.static(ROOT))
+console.log('ROUTE', `/.well-known/acme-challenge/${CHALLENGE}`)
 console.log('CHALLENGE', CHALLENGE)
 if (CHALLENGE)
   app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) => {
