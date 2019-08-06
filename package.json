@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack --silent||true && npx webpack -p",
-    "dev": "rm -rf dist && find . -name src./*.d.ts -type f -delete && npm run-script build && npm start",
+    "build": "npx webpack --silent||true & npx webpack -p",
+    "dev": "rm -rf dist && find src -name *.d.ts -type f -delete && npm run-script build && npm start",
     "start": "node index || npm install && npm run-script build && node index"
   },
   "repository": {
@@ -28,8 +28,10 @@
     "@types/react-dom": "^16.8.5",
     "css-loader": "^1.0.1",
     "html-webpack-plugin": "^3.2.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "html2canvas": "^1.0.0-rc.3",
+    "jspdf": "^1.5.3",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "ts-loader": "^6.0.4",
