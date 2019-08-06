@@ -9,8 +9,8 @@ const HTTP_PORT = process.env.HTTP_PORT || 80,
   PRIV_KEY = process.env.PRIVATEKEY || null,
   CERT = process.env.CERTIFICATE || null,
   ROOT = process.env.ROOT_PATH || path.resolve(__dirname, 'dist'),
-  CHALLENGE = process.env.CHALLENGE || null,
-  CERT_SECRET = process.env.CERTSECRET || 'SECRET UNAVAILABLE'
+  CHALLENGE = process.env.CHALLENGE.replace("'", '') || null,
+  CERT_SECRET = process.env.CERTSECRET.replace("'", '') || 'SECRET UNAVAILABLE'
 
 const credentials = { key: PRIV_KEY, cert: CERT }
 const app = express()
