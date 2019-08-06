@@ -10,7 +10,8 @@ ENV HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT CERTIFICATE=$CERTIFICATE PRIV_KE
 
 WORKDIR /HomePage/
 
-RUN apk add --update npm certbot
+RUN apk add --update npm 
+#certbot
 
 COPY package*.json ./
 
@@ -26,4 +27,4 @@ RUN printenv>.env
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
 
-CMD ["/bin/ash", "-c", "sleep infinity"]
+CMD ["sh", "-c", "sleep 3600"]

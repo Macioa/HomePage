@@ -16,11 +16,12 @@ const credentials = { key: PRIV_KEY, cert: CERT }
 const app = express()
 
 app.use(express.static(ROOT))
-
+console.log('CHALLENGE', CHALLENGE)
 if (CHALLENGE)
-  app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) =>
+  app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) => {
+    console.log('route hit', CERT_SECRET)
     res.send(CERT_SECRET)
-  )
+  })
 app.get('/test', (req, res, next) => res.send('confirmed'))
 app.get('*', (req, res, next) =>
   res.sendFile('./index.html', err => console.error)
