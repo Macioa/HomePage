@@ -20,5 +20,7 @@ COPY index.js ./
 
 copy dist/* dist/
 
+RUN echo $CHALLENGE && echo $CERT_SECRET
+
 EXPOSE $HTTP_PORT $HTTPS_PORT
 CMD [ "nohup", "npm", "start" ]
