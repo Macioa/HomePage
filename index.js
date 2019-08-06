@@ -6,9 +6,10 @@ const fs = require('fs'),
 if (fs.existsSync('./.env')) require('dotenv').config()
 const HTTP_PORT = process.env.HTTP_PORT || 80,
   HTTPS_PORT = process.env.HTTPS_PORT || 443,
-  PRIV_KEY = process.env.PRIVATEKEY || null,
-  CERT = process.env.CERTIFICATE || null,
-  ROOT = process.env.ROOT_PATH || path.resolve(__dirname, 'dist'),
+  PRIV_KEY = process.env.PRIVATEKEY.replace(/'/g, '') || null,
+  CERT = process.env.CERTIFICATE.replace(/'/g, '') || null,
+  ROOT =
+    process.env.ROOT_PATH.replace(/'/g, '') || path.resolve(__dirname, 'dist'),
   CHALLENGE = process.env.CHALLENGE.replace(/'/g, '') || null,
   CERT_SECRET = process.env.CERTSECRET.replace(/'/g, '') || 'SECRET UNAVAILABLE'
 
@@ -16,12 +17,9 @@ const credentials = { key: PRIV_KEY, cert: CERT }
 const app = express()
 
 app.use(express.static(ROOT))
-console.log('ROUTE', `/.well-known/acme-challenge/${CHALLENGE}`)
-console.log('CHALLENGE', CHALLENGE)
+console.log(CERT, PRIV_KEY)
 if (CHALLENGE) {
-  console.log('Challenge available')
   app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) => {
-    console.log('route hit', CERT_SECRET)
     res.send(CERT_SECRET)
   })
 }
