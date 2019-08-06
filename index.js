@@ -18,11 +18,13 @@ const app = express()
 app.use(express.static(ROOT))
 console.log('ROUTE', `/.well-known/acme-challenge/${CHALLENGE}`)
 console.log('CHALLENGE', CHALLENGE)
-if (CHALLENGE)
+if (CHALLENGE) {
+  console.log('Challenge available')
   app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) => {
     console.log('route hit', CERT_SECRET)
     res.send(CERT_SECRET)
   })
+}
 app.get('/test', (req, res, next) => res.send('confirmed'))
 app.get('*', (req, res, next) =>
   res.sendFile('./index.html', err => console.error)
