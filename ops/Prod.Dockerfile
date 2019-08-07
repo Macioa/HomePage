@@ -13,7 +13,7 @@ ENV HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT CERTIFICATE=$CERTIFICATE PRIVATE
 
 WORKDIR /HomePage/
 
-RUN apk add --update npm certbot
+RUN apk add --update npm 
 
 COPY package*.json ./
 
