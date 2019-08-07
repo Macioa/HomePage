@@ -23,10 +23,14 @@ Object.keys(vars).forEach(
       ? `${vars[k]}`
           .replace(/'/g)
           .replace(/undefined/g, '')
-          .replace(/ /g, '\n')
+          .replace(/(?<!BEGIN|END|PRIVATE) /g, '\n')
       : vars[k])
 )
+console.log('cert', vars.FULLCHAIN)
 const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
+// Object.keys(credentials).forEach(k =>
+//   fs.writeFileSync(`${k}.pem`, credentials[k])
+// )
 
 //Create app
 const app = express()
