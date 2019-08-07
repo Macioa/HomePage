@@ -3,6 +3,8 @@ const fs = require('fs'),
   http = require('http'),
   https = require('https'),
   express = require('express')
+
+//probe environment and create vars
 if (fs.existsSync('./.env')) require('dotenv').config()
 const vars = {
   HTTP_PORT: process.env.HTTP_PORT || 80,
@@ -18,8 +20,9 @@ const vars = {
 Object.keys(vars).forEach(
   k => (vars[k] = vars[k] ? `${vars[k]}`.replace(/'/g) : vars[k])
 )
-
 const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
+
+//Create app
 const app = express()
 
 app.use(express.static(vars.ROOT))
@@ -34,10 +37,14 @@ app.get('*', (req, res, next) =>
   res.sendFile('./index.html', err => console.error)
 )
 
+//Create servers
 const httpServer = http.createServer(app)
 const httpsServer =
-  vars.PRIV_KEY && vars.CERT ? https.createServer(credentials, app) : null
+  credentials.key && credentials.cert
+    ? https.createServer(credentials, app)
+    : null
 
+//Start servers
 httpServer.listen(vars.HTTP_PORT, err =>
   console.log(
     err ? `${vars.ROOT}\n${err}` : `Http server listening on ${vars.HTTP_PORT}`
