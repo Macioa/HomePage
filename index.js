@@ -26,7 +26,7 @@ Object.keys(vars).forEach(
           .replace(/(?<!BEGIN|END|PRIVATE) /g, '\n')
       : vars[k])
 )
-console.log('cert', vars.FULLCHAIN)
+
 const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
 // Object.keys(credentials).forEach(k =>
 //   fs.writeFileSync(`${k}.pem`, credentials[k])
@@ -34,18 +34,7 @@ const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
 
 //Create app
 const app = express()
-
 app.use(express.static(vars.ROOT))
-console.log(credentials)
-if (vars.CHALLENGE) {
-  app.get(`/.well-known/acme-challenge/${vars.CHALLENGE}`, (req, res, next) => {
-    res.send(vars.CERT_SECRET)
-  })
-}
-
-app.get('*', (req, res, next) =>
-  res.sendFile('./index.html', err => console.error)
-)
 
 //Create servers
 const httpServer = http.createServer(app)
@@ -53,6 +42,16 @@ const httpsServer =
   credentials.key && credentials.cert
     ? https.createServer(credentials, app)
     : null
+
+//Create routes
+if (httpsServer)
+  httpServer.use((req, res) => {
+    res.redirect('https://ryanwademontgomery.com')
+  })
+
+app.get('*', (req, res, next) =>
+  res.sendFile('./index.html', err => console.error)
+)
 
 //Start servers
 httpServer.listen(vars.HTTP_PORT, err =>

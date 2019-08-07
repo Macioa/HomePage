@@ -29,4 +29,4 @@ RUN printenv>.env
 
 EXPOSE $HTTP_PORT $HTTPS_PORT
 
-CMD ["sh", "-c", "sleep 3800"]
+CMD ["sh", "-c", "node index"]
