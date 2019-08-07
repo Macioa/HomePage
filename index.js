@@ -4,40 +4,50 @@ const fs = require('fs'),
   https = require('https'),
   express = require('express')
 if (fs.existsSync('./.env')) require('dotenv').config()
-const HTTP_PORT = process.env.HTTP_PORT || 80,
-  HTTPS_PORT = process.env.HTTPS_PORT || 443,
-  PRIV_KEY = process.env.PRIVATEKEY.replace(/'/g, '') || null,
-  CERT = process.env.CERTIFICATE.replace(/'/g, '') || null,
-  ROOT =
-    process.env.ROOT_PATH.replace(/'/g, '') || path.resolve(__dirname, 'dist'),
-  CHALLENGE = process.env.CHALLENGE.replace(/'/g, '') || null,
-  CERT_SECRET = process.env.CERTSECRET.replace(/'/g, '') || 'SECRET UNAVAILABLE'
+const vars = {
+  HTTP_PORT: process.env.HTTP_PORT || 80,
+  HTTPS_PORT: process.env.HTTPS_PORT || 443,
+  PRIVKEY: process.env.PRIVATEKEY || null,
+  CERT: process.env.CERTIFICATE || null,
+  ROOT: process.env.ROOT_PATH || path.resolve(__dirname, 'dist'),
+  CHALLENGE: process.env.CHALLENGE || null,
+  CERT_SECRET: process.env.CERTSECRET || 'SECRET UNAVAILABLE',
+  CHAIN: process.env.CHAIN || null,
+  FULLCHAIN: process.env.FULLCHAIN || null
+}
+Object.keys(vars).forEach(
+  k => (vars[k] = vars[k] ? `${vars[k]}`.replace(/'/g) : vars[k])
+)
 
-const credentials = { key: PRIV_KEY, cert: CERT }
+const credentials = { key: vars.PRIVKEY, cert: vars.CERT }
 const app = express()
 
-app.use(express.static(ROOT))
-console.log(CERT, PRIV_KEY)
-if (CHALLENGE) {
-  app.get(`/.well-known/acme-challenge/${CHALLENGE}`, (req, res, next) => {
-    res.send(CERT_SECRET)
+app.use(express.static(vars.ROOT))
+console.log(credentials)
+if (vars.CHALLENGE) {
+  app.get(`/.well-known/acme-challenge/${vars.CHALLENGE}`, (req, res, next) => {
+    res.send(vars.CERT_SECRET)
   })
 }
-app.get('/test', (req, res, next) => res.send('confirmed'))
+
 app.get('*', (req, res, next) =>
   res.sendFile('./index.html', err => console.error)
 )
 
 const httpServer = http.createServer(app)
 const httpsServer =
-  PRIV_KEY && CERT ? https.createServer(credentials, app) : null
+  vars.PRIV_KEY && vars.CERT ? https.createServer(credentials, app) : null
 
-httpServer.listen(HTTP_PORT, err =>
-  console.log(err ? `${ROOT}\n${err}` : `Http server listening on ${HTTP_PORT}`)
+httpServer.listen(vars.HTTP_PORT, err =>
+  console.log(
+    err ? `${vars.ROOT}\n${err}` : `Http server listening on ${vars.HTTP_PORT}`
+  )
 )
 if (httpsServer)
-  httpsServer.listen(HTTPS_PORT, err =>
+  httpsServer.listen(vars.HTTPS_PORT, err =>
     console.log(
-      err ? `${ROOT}\n${err}` : `Https server listening on ${HTTPS_PORT}`
+      err
+        ? `${vars.ROOT}\n${err}`
+        : `Https server listening on ${vars.HTTPS_PORT}`
     )
   )
