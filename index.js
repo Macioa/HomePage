@@ -20,7 +20,10 @@ const vars = {
 Object.keys(vars).forEach(
   k =>
     (vars[k] = vars[k]
-      ? `${vars[k]}`.replace(/'/g).replace('undefined', '')
+      ? `${vars[k]}`
+          .replace(/'/g)
+          .replace(/undefined/g, '')
+          .replace(/ /g, '\n')
       : vars[k])
 )
 const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
