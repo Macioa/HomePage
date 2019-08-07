@@ -7,16 +7,17 @@ const fs = require('fs'),
 //probe environment and create vars
 if (fs.existsSync('./.env')) require('dotenv').config()
 const vars = {
+  ROOT: process.env.ROOT_PATH || path.resolve(__dirname, 'dist'),
   HTTP_PORT: process.env.HTTP_PORT || 80,
   HTTPS_PORT: process.env.HTTPS_PORT || 443,
   PRIVKEY: process.env.PRIVATEKEY || null,
   CERT: process.env.CERTIFICATE || null,
-  ROOT: process.env.ROOT_PATH || path.resolve(__dirname, 'dist'),
-  CHALLENGE: process.env.CHALLENGE || null,
-  CERT_SECRET: process.env.CERTSECRET || 'SECRET UNAVAILABLE',
   CHAIN: process.env.CHAIN || null,
-  FULLCHAIN: process.env.FULLCHAIN || null
+  FULLCHAIN: process.env.FULLCHAIN || null,
+  WRITEPEM: process.env.WRITEPEM
 }
+
+//Sterilize env vars and write pems if applicable
 Object.keys(vars).forEach(
   k =>
     (vars[k] = vars[k]
@@ -28,29 +29,29 @@ Object.keys(vars).forEach(
 )
 
 const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
-// Object.keys(credentials).forEach(k =>
-//   fs.writeFileSync(`${k}.pem`, credentials[k])
-// )
+if (vars.WRITEPEM)
+  Object.keys(credentials).forEach(k =>
+    fs.writeFileSync(`${k}.pem`, credentials[k])
+  )
 
-//Create app
+//Create apps
 const app = express()
 app.use(express.static(vars.ROOT))
+const SSLreroute = express()
 
 //Create servers
-const httpServer = http.createServer(app)
 const httpsServer =
   credentials.key && credentials.cert
     ? https.createServer(credentials, app)
     : null
+const httpServer = http.createServer(httpsServer ? SSLreroute : app)
 
 //Create routes
-if (httpsServer)
-  httpServer.use((req, res) => {
-    res.redirect('https://ryanwademontgomery.com')
-  })
-
 app.get('*', (req, res, next) =>
   res.sendFile('./index.html', err => console.error)
+)
+SSLreroute.get('*', (req, res) =>
+  res.redirect('https://ryanwademontgomery.com')
 )
 
 //Start servers

@@ -3,16 +3,17 @@ ENV HTTP_PORT=80 HTTPS_PORT=443
 
 WORKDIR /HomePage/
 
-# Install app dependencies
+# DEPENDENCIES
 COPY package*.json ./
  
 RUN npm i
 
-# Bundle app source
+# SOURCE
 COPY . .
 
-# Compile
+# COMPILE
 RUN npm run-script build
 
+# FIN
 EXPOSE $HTTP_PORT $HTTPS_PORT
 CMD [ "npm", "start" ]
