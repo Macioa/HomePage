@@ -18,7 +18,10 @@ const vars = {
   FULLCHAIN: process.env.FULLCHAIN || null
 }
 Object.keys(vars).forEach(
-  k => (vars[k] = vars[k] ? `${vars[k]}`.replace(/'/g) : vars[k])
+  k =>
+    (vars[k] = vars[k]
+      ? `${vars[k]}`.replace(/'/g).replace('undefined', '')
+      : vars[k])
 )
 const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
 
