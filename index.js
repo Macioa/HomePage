@@ -19,7 +19,7 @@ Object.keys(vars).forEach(
   k => (vars[k] = vars[k] ? `${vars[k]}`.replace(/'/g) : vars[k])
 )
 
-const credentials = { key: vars.PRIVKEY, cert: vars.CERT }
+const credentials = { key: vars.PRIVKEY, cert: vars.FULLCHAIN }
 const app = express()
 
 app.use(express.static(vars.ROOT))
