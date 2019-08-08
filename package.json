@@ -4,7 +4,7 @@
   "description": "HomePage Rewrite",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "npx webpack --silent || true && npx webpack -p",
     "dev": "rm -rf dist && find src -name *.d.ts -type f -delete && npm run-script build && npm start",
     "start": "node index || npm install && npm run-script build && node index"
@@ -23,17 +23,33 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1"
   },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
+  },
   "devDependencies": {
+    "@types/jest": "^24.0.17",
     "@types/node": "^12.6.9",
     "@types/react": "^16.8.24",
     "@types/react-dom": "^16.8.5",
+    "@types/react-test-renderer": "^16.8.3",
     "css-loader": "^1.0.1",
     "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.8.0",
     "jspdf": "^1.5.3",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
+    "react-test-renderer": "^16.8.6",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
+    "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
     "typings-for-css-modules-loader": "^1.7.0",
