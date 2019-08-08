@@ -14,7 +14,7 @@ const vars = {
   CERT: process.env.CERTIFICATE || null,
   CHAIN: process.env.CHAIN || null,
   FULLCHAIN: process.env.FULLCHAIN || null,
-  WRITEPEM: process.env.WRITEPEM
+  WRITEPEM: process.env.WRITEPEM || ''
 }
 
 //Sterilize env vars and write pems if applicable
