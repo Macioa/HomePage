@@ -7,10 +7,10 @@ class Obj {
 //   Primative
 
 export class Phone extends Obj {
-  country?: Number
-  area: Number
-  line1: Number
-  line2: Number
+  country?: number
+  area: number
+  line1: number
+  line2: number
   get(seperator = '-'): String {
     return `${this.country ? `+${this.country} ` : ''}${this.area}${seperator}${
       this.line1
@@ -24,7 +24,7 @@ export class Address extends Obj {
     city: String
     state: String
     country: String
-    zip: Number
+    zip: number
   }
   short?: String
   remote?: Boolean
@@ -101,9 +101,9 @@ export interface Certification {
 export interface Skill {
   name: String
   start?: String
-  proficiency: Number
-  priority?: Number
-  totalyrs?: Number
+  proficiency: number
+  priority?: number
+  totalyrs?: number
   bullets?: { date: string; desc: String }[]
   lastused?: String
   desc?: String
