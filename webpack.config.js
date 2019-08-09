@@ -48,7 +48,8 @@ module.exports = {
     react: 'React',
     'react-dom': 'ReactDOM',
     'react-three-fiber': 'react-three-fiber',
-    three: 'three'
+    three: 'THREE',
+    cannon: 'CANNON'
   },
   plugins: [
     new HtmlWebPackPlugin({
