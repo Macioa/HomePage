@@ -21,7 +21,7 @@ export interface Obj {
   shape: string
   startpos: number[]
   mass: number
-  anchorgrav: number
+  anchorgrav?: number
 }
 
 // create necessary objects for scene
