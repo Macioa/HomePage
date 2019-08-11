@@ -6,7 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/jest",
     "build": "npx webpack --silent || true && npx webpack -p",
-    "dev": "rm -rf dist && find src -name *.d.ts -type f -delete && npm run-script build && npm start",
+    "dev": "rm -rf dist && find src -name *.d.ts -type f -delete && npm run-script build && npm test -- --u && npm start",
     "start": "node index || npm install && npm run-script build && node index"
   },
   "repository": {
