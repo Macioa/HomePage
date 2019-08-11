@@ -55,6 +55,7 @@ export const Resize = (i: Instance, w: number, h: number) => {
 export const Reproject = ({ camera }: Instance, w: number, h: number) => {
   camera.aspect = w / h
   camera.updateProjectionMatrix()
+  camera.position.setZ(62000 / w)
 }
 
 // start render
@@ -81,8 +82,8 @@ export const Start = (i: Instance) => {
 }
 
 // create geometry from string
+const mem = new Map()
 export const ComputeTextGeometry = (text = '', font: THREE.Font) => {
-  let mem = new Map()
   return text.split('').map(c => {
     let data = mem.get(c)
       ? mem.get(c)
