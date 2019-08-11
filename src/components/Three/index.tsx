@@ -38,7 +38,7 @@ export const init = (
     ),
     renderer = new THREE.WebGLRenderer()
   }: Instance,
-  camerapos = [0, 0, 5]
+  camerapos = [0, 0, 45]
 ) => {
   camera.position.set(camerapos[0], camerapos[1], camerapos[2])
   world.gravity = gravity
@@ -128,18 +128,23 @@ export const AddToSim = (
         position: new cannon.Vec3(sp[0], sp[1], sp[2]),
         shape: cShape
       })
+    console.log('testing', startpos)
     i.world.addBody(body)
     i.scene.add(mesh)
     let res = { mesh, body, shape, startpos, mass, anchorgrav }
     i.objects.push(res)
     if (res.anchorgrav) {
       res.body.preStep = () => {
-        //vel + (startingpos-currentpos)*anchorgrav
+        //  vel + (startingpos-currentpos) * anchorgrav
         res.body.velocity = res.body.velocity.vadd(
           new cannon.Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
             .vadd(res.body.position.negate())
             .scale(res.anchorgrav)
         )
+        // torq - eulerAngle * anchorgrav
+        let q = new cannon.Vec3()
+        res.body.quaternion.toEuler(q)
+        res.body.torque = res.body.torque.vsub(q.scale(0.5))
       }
     }
     return res
@@ -173,11 +178,12 @@ export const ThreeCanvas = () => {
           mesh: m,
           shape: 'box',
           mass: 1,
-          startpos: [0, 0, 0],
-          anchorgrav: 0.001
+          startpos: [-55 + i * 12, 0, 0],
+          anchorgrav: 0.01
         }
       })
     )
+
     Start(i)
   })
   return <div ref={ref} style={{ width: '100%', height: '100%' }} id='3Scene' />
