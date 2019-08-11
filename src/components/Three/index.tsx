@@ -18,7 +18,7 @@ export interface Instance {
 export interface Obj {
   mesh: THREE.Mesh
   body?: cannon.Body
-  shape: string
+  shape?: string
   startpos: number[]
   mass: number
   anchorgrav?: number
@@ -88,7 +88,7 @@ export const ComputeTextGeometry = (text = '', font: THREE.Font) => {
       ? mem.get(c)
       : new THREE.TextGeometry(c, {
           size: 10,
-          height: 0.5,
+          height: 0.25,
           curveSegments: 3,
           font: font
         })
@@ -111,7 +111,7 @@ export const AddToSim = (
   defaultMass: number = 1000
 ) => {
   if (!i.objects) i.objects = []
-  return meshes.map(({ mesh, shape, startpos, mass }) => {
+  return meshes.map(({ mesh, shape, startpos, mass, anchorgrav = null }) => {
     // mesh.geometry.computeBoundingBox()
     let size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()),
       maxBound = size.x >= size.y ? size.x : size.y,
@@ -130,8 +130,18 @@ export const AddToSim = (
       })
     i.world.addBody(body)
     i.scene.add(mesh)
-    let res = { mesh, body, shape, startpos, mass }
+    let res = { mesh, body, shape, startpos, mass, anchorgrav }
     i.objects.push(res)
+    if (res.anchorgrav) {
+      res.body.preStep = () => {
+        //vel + (startingpos-currentpos)*anchorgrav
+        res.body.velocity = res.body.velocity.vadd(
+          new cannon.Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
+            .vadd(res.body.position.negate())
+            .scale(res.anchorgrav)
+        )
+      }
+    }
     return res
   })
 }
@@ -157,13 +167,14 @@ export const ThreeCanvas = () => {
           'Hello World',
           new THREE.Font(require('./fontdata/moonlime.json'))
         ),
-        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
       ).map((m, i) => {
         return {
           mesh: m,
           shape: 'box',
           mass: 1,
-          startpos: [0, 0, 0]
+          startpos: [0, 0, 0],
+          anchorgrav: 0.001
         }
       })
     )
