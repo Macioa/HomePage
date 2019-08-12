@@ -55,7 +55,7 @@ export const Resize = (i: Instance, w: number, h: number) => {
 export const Reproject = ({ camera }: Instance, w: number, h: number) => {
   camera.aspect = w / h
   camera.updateProjectionMatrix()
-  camera.position.setZ(62000 / w)
+  // camera.position.setZ(7000000 / w)
 }
 
 // start render
@@ -142,7 +142,7 @@ export const AddToSim = (
             .vadd(res.body.position.negate())
             .scale(res.anchorgrav)
         )
-        // torq - eulerAngle * anchorgrav
+        // torq - eulerAngle * .5
         let q = new cannon.Vec3()
         res.body.quaternion.toEuler(q)
         res.body.torque = res.body.torque.vsub(q.scale(0.5))
@@ -171,7 +171,7 @@ export const ThreeCanvas = () => {
       CreateMeshes(
         ComputeTextGeometry(
           'Hello World',
-          new THREE.Font(require('./fontdata/moonlime.json'))
+          new THREE.Font(require('./fontdata/moonglade.json'))
         ),
         new THREE.MeshBasicMaterial({ color: 0xffffff })
       ).map((m, i) => {
@@ -179,8 +179,8 @@ export const ThreeCanvas = () => {
           mesh: m,
           shape: 'box',
           mass: 1,
-          startpos: [-55 + i * 12, 0, 0],
-          anchorgrav: 0.01
+          startpos: [-55 + i * 14, 0, 0],
+          anchorgrav: 0.2
         }
       })
     )
