@@ -171,7 +171,7 @@ export const ThreeCanvas = () => {
       CreateMeshes(
         ComputeTextGeometry(
           'Hello World',
-          new THREE.Font(require('./fontdata/moonglade.json'))
+          new THREE.Font(require('./fontdata/Moonglade.json'))
         ),
         new THREE.MeshBasicMaterial({ color: 0xffffff })
       ).map((m, i) => {
