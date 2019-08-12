@@ -5,6 +5,7 @@ import * as cannon from 'cannon'
 import './styles.css'
 import * as style from './styles.css'
 import { TextGeometry } from 'three'
+import { resolve } from 'path'
 
 export interface Instance {
   world?: cannon.World
@@ -110,7 +111,7 @@ export const AddToSim = (
   i: Instance,
   meshes: Obj[] = [],
   defaultMass: number = 1000
-) => {
+): Obj[] => {
   if (!i.objects) i.objects = []
   return meshes.map(({ mesh, shape, startpos, mass, anchorgrav = null }) => {
     // mesh.geometry.computeBoundingBox()
@@ -152,6 +153,40 @@ export const AddToSim = (
   })
 }
 
+// create full objects from string
+export const TextMesh = ({
+  text = 'Hello World',
+  spacing = 5,
+  font = './fontdata/moonglade.json',
+  material = new THREE.MeshBasicMaterial({ color: 0xffffff }),
+  options = {}
+}): Obj[] => {
+  let meshes = CreateMeshes(
+    ComputeTextGeometry(text, new THREE.Font(require(`${font}`))),
+    material
+  ).map(m => {
+    return {
+      mesh: m,
+      width: m.geometry.boundingBox.getSize(new THREE.Vector3()).x
+    }
+  })
+  const sum = (total: number, mesh: any) => total + mesh.width + spacing
+  let totalWidth = meshes.reduce(sum, -spacing),
+    currentpos = -totalWidth / 2 // left most bound
+  return meshes.map(m => {
+    let res = {
+      mesh: m.mesh,
+      shape: 'box',
+      mass: 1,
+      startpos: [currentpos + m.width / 2, 0, 0],
+      anchorgrav: 0.2,
+      ...options
+    }
+    currentpos = currentpos + m.width + spacing
+    return res
+  })
+}
+
 //
 //
 //
@@ -166,24 +201,7 @@ export const ThreeCanvas = () => {
     ref.current.appendChild(i.renderer.domElement)
     window.addEventListener('resize', resolve)
 
-    AddToSim(
-      i,
-      CreateMeshes(
-        ComputeTextGeometry(
-          'Hello World',
-          new THREE.Font(require('./fontdata/Moonglade.json'))
-        ),
-        new THREE.MeshBasicMaterial({ color: 0xffffff })
-      ).map((m, i) => {
-        return {
-          mesh: m,
-          shape: 'box',
-          mass: 1,
-          startpos: [-55 + i * 14, 0, 0],
-          anchorgrav: 0.2
-        }
-      })
-    )
+    AddToSim(i, TextMesh({ text: 'Testing' }))
 
     Start(i)
   })
