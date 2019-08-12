@@ -157,19 +157,18 @@ export const AddToSim = (
 export const TextMesh = ({
   text = 'Hello World',
   spacing = 5,
-  font = './fontdata/moonglade.json',
+  font = new THREE.Font(require('./fontdata/Moonglade.json')),
   material = new THREE.MeshBasicMaterial({ color: 0xffffff }),
   options = {}
 }): Obj[] => {
-  let meshes = CreateMeshes(
-    ComputeTextGeometry(text, new THREE.Font(require(`${font}`))),
-    material
-  ).map(m => {
-    return {
-      mesh: m,
-      width: m.geometry.boundingBox.getSize(new THREE.Vector3()).x
+  let meshes = CreateMeshes(ComputeTextGeometry(text, font), material).map(
+    m => {
+      return {
+        mesh: m,
+        width: m.geometry.boundingBox.getSize(new THREE.Vector3()).x
+      }
     }
-  })
+  )
   const sum = (total: number, mesh: any) => total + mesh.width + spacing
   let totalWidth = meshes.reduce(sum, -spacing),
     currentpos = -totalWidth / 2 // left most bound
