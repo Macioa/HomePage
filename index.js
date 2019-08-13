@@ -4,6 +4,10 @@ const fs = require('fs'),
   https = require('https'),
   express = require('express')
 
+if (process.env.NODE_ENV !== 'test') {
+  app.use(express.logger())
+}
+
 //probe environment and create vars
 if (fs.existsSync('./.env')) require('dotenv').config()
 const vars = {
@@ -48,7 +52,7 @@ const httpServer = http.createServer(httpsServer ? SSLreroute : app)
 
 //Create routes
 app.get('*', (req, res, next) =>
-  res.sendFile('./index.html', err => console.error)
+  res.sendFile('index.html', { root: vars.ROOT }, err => console.error)
 )
 SSLreroute.get('*', (req, res) =>
   res.redirect('https://ryanwademontgomery.com')
@@ -68,3 +72,8 @@ if (httpsServer)
         : `Https server listening on ${vars.HTTPS_PORT}`
     )
   )
+
+module.exports = {
+  http: httpServer,
+  https: httpsServer
+}

@@ -31,7 +31,8 @@
     "transform": {
       "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
+    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$",
+    "verbose": true
   },
   "dependencies": {
     "dotenv": "^8.0.0",
@@ -51,6 +52,7 @@
     "jest": "^24.8.0",
     "jest-webgl-canvas-mock": "^0.2.2",
     "jspdf": "^1.5.3",
+    "node-fetch": "^2.6.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-test-renderer": "^16.8.6",
