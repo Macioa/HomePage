@@ -2,10 +2,6 @@ import React, { useRef, useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom'
 import * as THREE from 'three'
 import * as CANNON from 'cannon'
-import './styles.css'
-import * as style from './styles.css'
-import { TextGeometry } from 'three'
-import { resolve } from 'path'
 
 export interface Instance {
   world?: CANNON.World
@@ -38,7 +34,7 @@ export const init = (
       1000
     ),
     renderer = new THREE.WebGLRenderer()
-  }: Instance,
+  }: Instance = {},
   camerapos = [0, 0, 45]
 ): Instance => {
   camera.position.set(camerapos[0], camerapos[1], camerapos[2])
@@ -56,7 +52,7 @@ export const Resize = (i: Instance, w: number, h: number): void => {
 export const Reproject = ({ camera }: Instance, w: number, h: number): void => {
   camera.aspect = w / h
   camera.updateProjectionMatrix()
-  // camera.position.setZ(7000000 / w)
+  camera.position.setZ((175 * h) / w)
 }
 
 // start render
@@ -119,9 +115,8 @@ export const AddToSim = (
   return meshes.map(({ mesh, shape, startpos, mass, anchorgrav = null }) => {
     // mesh.geometry.computeBoundingBox()
     let size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()),
-      maxBound = size.x >= size.y ? size.x : size.y,
+      maxBound = Object.values(size).sort((a, b) => b - a)[0],
       sp = startpos.length >= 3 ? startpos : [0, 0, 0]
-    maxBound = maxBound >= size.z ? maxBound : size.z
     mass = mass ? mass : defaultMass
     shape = shape.toLowerCase() === 'sphere' ? 'sphere' : 'box'
     let cShape =
@@ -133,7 +128,6 @@ export const AddToSim = (
         position: new CANNON.Vec3(sp[0], sp[1], sp[2]),
         shape: cShape
       })
-    console.log('testing', startpos)
     i.world.addBody(body)
     i.scene.add(mesh)
     let res = { mesh, body, shape, startpos, mass, anchorgrav }
@@ -146,10 +140,10 @@ export const AddToSim = (
             .vadd(res.body.position.negate())
             .scale(res.anchorgrav)
         )
-        // torq - eulerAngle * .5
+        // torq - eulerAngle
         let q = new CANNON.Vec3()
         res.body.quaternion.toEuler(q)
-        res.body.torque = res.body.torque.vsub(q.scale(0.5))
+        res.body.torque = res.body.torque.vsub(q)
       }
     }
     return res
@@ -159,7 +153,7 @@ export const AddToSim = (
 // create full objects from string
 export const TextMesh = ({
   text = 'Hello World',
-  spacing = 5,
+  spacing = 8,
   font = new THREE.Font(require('./fontdata/Moonglade.json')),
   material = new THREE.MeshBasicMaterial({ color: 0xffffff }),
   options = {}
@@ -173,7 +167,7 @@ export const TextMesh = ({
     }
   )
   const sum = (total: number, mesh: any) => total + mesh.width + spacing
-  let totalWidth = meshes.reduce(sum, -spacing),
+  let totalWidth = meshes.reduce(sum, spacing),
     currentpos = -totalWidth / 2 // left most bound
   return meshes.map(m => {
     let res = {
@@ -203,7 +197,7 @@ export const ThreeCanvas = () => {
     ref.current.appendChild(i.renderer.domElement)
     window.addEventListener('resize', resolve)
 
-    AddToSim(i, TextMesh({ text: 'Testing' }))
+    AddToSim(i, TextMesh({ text: 'Ryan Montgomery' }))
 
     Start(i)
   })
