@@ -4,10 +4,6 @@ const fs = require('fs'),
   https = require('https'),
   express = require('express')
 
-if (process.env.NODE_ENV !== 'test') {
-  app.use(express.logger())
-}
-
 //probe environment and create vars
 if (fs.existsSync('./.env')) require('dotenv').config()
 const vars = {
@@ -40,6 +36,7 @@ if (vars.WRITEPEM)
 
 //Create apps
 const app = express()
+// if (process.env.NODE_ENV !== 'test') app.use(express.logger())
 app.use(express.static(vars.ROOT))
 const SSLreroute = express()
 
