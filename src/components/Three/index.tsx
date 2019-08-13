@@ -1,20 +1,31 @@
-import React, { useRef, useEffect, useMemo } from 'react'
-import ReactDOM from 'react-dom'
-import * as THREE from 'three'
-import * as CANNON from 'cannon'
+import React, { useRef, useEffect } from 'react'
+import {
+  Scene,
+  PerspectiveCamera,
+  Renderer,
+  Mesh,
+  WebGLRenderer,
+  Vector3,
+  Geometry,
+  TextGeometry,
+  Material,
+  MeshBasicMaterial,
+  Font
+} from 'three'
+import { World, Body, Vec3, Sphere, Box } from 'cannon'
 
 export interface Instance {
-  world?: CANNON.World
-  gravity?: CANNON.Vec3
-  scene?: THREE.Scene
-  camera?: THREE.PerspectiveCamera
-  renderer?: THREE.Renderer
+  world?: World
+  gravity?: Vec3
+  scene?: Scene
+  camera?: PerspectiveCamera
+  renderer?: Renderer
   objects?: Obj[]
 }
 
 export interface Obj {
-  mesh: THREE.Mesh
-  body?: CANNON.Body
+  mesh: Mesh
+  body?: Body
   shape?: string
   startpos: number[]
   mass: number
@@ -24,16 +35,16 @@ export interface Obj {
 // create necessary objects for scene
 export const init = (
   {
-    world = new CANNON.World(),
-    gravity = new CANNON.Vec3(0, 0, -9.82),
-    scene = new THREE.Scene(),
-    camera = new THREE.PerspectiveCamera(
+    world = new World(),
+    gravity = new Vec3(0, 0, -9.82),
+    scene = new Scene(),
+    camera = new PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     ),
-    renderer = new THREE.WebGLRenderer()
+    renderer = new WebGLRenderer()
   }: Instance = {},
   camerapos = [0, 0, 45]
 ): Instance => {
@@ -80,14 +91,11 @@ export const Start = (i: Instance): void => {
 
 // create geometry from string
 const mem = new Map()
-export const ComputeTextGeometry = (
-  text = '',
-  font: THREE.Font
-): THREE.Geometry[] => {
+export const ComputeTextGeometry = (text = '', font: Font): Geometry[] => {
   return text.split('').map(c => {
     let data = mem.get(c)
       ? mem.get(c)
-      : new THREE.TextGeometry(c, {
+      : new TextGeometry(c, {
           size: 10,
           height: 0.25,
           curveSegments: 3,
@@ -101,9 +109,9 @@ export const ComputeTextGeometry = (
 
 // create meshes from geometry
 export const CreateMeshes = (
-  geos: THREE.Geometry[] = [],
-  material: THREE.Material
-): THREE.Mesh[] => geos.map(g => new THREE.Mesh(g, material))
+  geos: Geometry[] = [],
+  material: Material
+): Mesh[] => geos.map(g => new Mesh(g, material))
 
 // add elements to simulation //compute bounds, find largest bound, create CANNON body, add to THREE scene and CANNON sim
 export const AddToSim = (
@@ -114,18 +122,18 @@ export const AddToSim = (
   if (!i.objects) i.objects = []
   return meshes.map(({ mesh, shape, startpos, mass, anchorgrav = null }) => {
     // mesh.geometry.computeBoundingBox()
-    let size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()),
+    let size = mesh.geometry.boundingBox.getSize(new Vector3()),
       maxBound = Object.values(size).sort((a, b) => b - a)[0],
       sp = startpos.length >= 3 ? startpos : [0, 0, 0]
     mass = mass ? mass : defaultMass
     shape = shape.toLowerCase() === 'sphere' ? 'sphere' : 'box'
     let cShape =
         shape === 'sphere'
-          ? new CANNON.Sphere(maxBound)
-          : new CANNON.Box(new CANNON.Vec3(size.x, size.y, size.z)),
-      body = new CANNON.Body({
+          ? new Sphere(maxBound)
+          : new Box(new Vec3(size.x, size.y, size.z)),
+      body = new Body({
         mass,
-        position: new CANNON.Vec3(sp[0], sp[1], sp[2]),
+        position: new Vec3(sp[0], sp[1], sp[2]),
         shape: cShape
       })
     i.world.addBody(body)
@@ -136,12 +144,12 @@ export const AddToSim = (
       res.body.preStep = () => {
         //  vel + (startingpos-currentpos) * anchorgrav
         res.body.velocity = res.body.velocity.vadd(
-          new CANNON.Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
+          new Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
             .vadd(res.body.position.negate())
             .scale(res.anchorgrav)
         )
         // torq - eulerAngle
-        let q = new CANNON.Vec3()
+        let q = new Vec3()
         res.body.quaternion.toEuler(q)
         res.body.torque = res.body.torque.vsub(q)
       }
@@ -154,15 +162,15 @@ export const AddToSim = (
 export const TextMesh = ({
   text = 'Hello World',
   spacing = 8,
-  font = new THREE.Font(require('./fontdata/Moonglade.json')),
-  material = new THREE.MeshBasicMaterial({ color: 0xffffff }),
+  font = new Font(require('./fontdata/Moonglade.json')),
+  material = new MeshBasicMaterial({ color: 0xffffff }),
   options = {}
 }): Obj[] => {
   let meshes = CreateMeshes(ComputeTextGeometry(text, font), material).map(
     m => {
       return {
         mesh: m,
-        width: m.geometry.boundingBox.getSize(new THREE.Vector3()).x
+        width: m.geometry.boundingBox.getSize(new Vector3()).x
       }
     }
   )
@@ -189,7 +197,7 @@ export const TextMesh = ({
 // create react element
 export const ThreeCanvas = () => {
   const ref = useRef(null)
-  let i = init({ gravity: new CANNON.Vec3(0, 0, 0) })
+  let i = init({ gravity: new Vec3(0, 0, 0) })
   const resolve = () =>
     Resize(i, ref.current.offsetWidth, ref.current.offsetHeight)
   useEffect(() => {
