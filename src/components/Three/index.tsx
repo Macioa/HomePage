@@ -1,15 +1,15 @@
 import React, { useRef, useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom'
 import * as THREE from 'three'
-import * as cannon from 'cannon'
+import * as CANNON from 'cannon'
 import './styles.css'
 import * as style from './styles.css'
 import { TextGeometry } from 'three'
 import { resolve } from 'path'
 
 export interface Instance {
-  world?: cannon.World
-  gravity?: cannon.Vec3
+  world?: CANNON.World
+  gravity?: CANNON.Vec3
   scene?: THREE.Scene
   camera?: THREE.PerspectiveCamera
   renderer?: THREE.Renderer
@@ -18,7 +18,7 @@ export interface Instance {
 
 export interface Obj {
   mesh: THREE.Mesh
-  body?: cannon.Body
+  body?: CANNON.Body
   shape?: string
   startpos: number[]
   mass: number
@@ -40,27 +40,27 @@ export const init = (
     renderer = new THREE.WebGLRenderer()
   }: Instance,
   camerapos = [0, 0, 45]
-) => {
+): Instance => {
   camera.position.set(camerapos[0], camerapos[1], camerapos[2])
   world.gravity = gravity
   return { world, gravity, scene, camera, renderer }
 }
 
 // resize render and reproject aspect ratio for camera
-export const Resize = (i: Instance, w: number, h: number) => {
+export const Resize = (i: Instance, w: number, h: number): void => {
   i.renderer.setSize(w, h)
   Reproject(i, w, h)
 }
 
 // reproject asspect ratio for camera
-export const Reproject = ({ camera }: Instance, w: number, h: number) => {
+export const Reproject = ({ camera }: Instance, w: number, h: number): void => {
   camera.aspect = w / h
   camera.updateProjectionMatrix()
   // camera.position.setZ(7000000 / w)
 }
 
 // start render
-export const Start = (i: Instance) => {
+export const Start = (i: Instance): void => {
   var prevRender: number
   const animate = (t = Date.now(), step = 1 / 60, maxSubSteps = 3) => {
     requestAnimationFrame(animate)
@@ -84,7 +84,10 @@ export const Start = (i: Instance) => {
 
 // create geometry from string
 const mem = new Map()
-export const ComputeTextGeometry = (text = '', font: THREE.Font) => {
+export const ComputeTextGeometry = (
+  text = '',
+  font: THREE.Font
+): THREE.Geometry[] => {
   return text.split('').map(c => {
     let data = mem.get(c)
       ? mem.get(c)
@@ -104,9 +107,9 @@ export const ComputeTextGeometry = (text = '', font: THREE.Font) => {
 export const CreateMeshes = (
   geos: THREE.Geometry[] = [],
   material: THREE.Material
-) => geos.map(g => new THREE.Mesh(g, material))
+): THREE.Mesh[] => geos.map(g => new THREE.Mesh(g, material))
 
-// add elements to simulation //compute bounds, find largest bound, create cannon body, add to THREE scene and CANNON sim
+// add elements to simulation //compute bounds, find largest bound, create CANNON body, add to THREE scene and CANNON sim
 export const AddToSim = (
   i: Instance,
   meshes: Obj[] = [],
@@ -123,11 +126,11 @@ export const AddToSim = (
     shape = shape.toLowerCase() === 'sphere' ? 'sphere' : 'box'
     let cShape =
         shape === 'sphere'
-          ? new cannon.Sphere(maxBound)
-          : new cannon.Box(new cannon.Vec3(size.x, size.y, size.z)),
-      body = new cannon.Body({
+          ? new CANNON.Sphere(maxBound)
+          : new CANNON.Box(new CANNON.Vec3(size.x, size.y, size.z)),
+      body = new CANNON.Body({
         mass,
-        position: new cannon.Vec3(sp[0], sp[1], sp[2]),
+        position: new CANNON.Vec3(sp[0], sp[1], sp[2]),
         shape: cShape
       })
     console.log('testing', startpos)
@@ -139,12 +142,12 @@ export const AddToSim = (
       res.body.preStep = () => {
         //  vel + (startingpos-currentpos) * anchorgrav
         res.body.velocity = res.body.velocity.vadd(
-          new cannon.Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
+          new CANNON.Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
             .vadd(res.body.position.negate())
             .scale(res.anchorgrav)
         )
         // torq - eulerAngle * .5
-        let q = new cannon.Vec3()
+        let q = new CANNON.Vec3()
         res.body.quaternion.toEuler(q)
         res.body.torque = res.body.torque.vsub(q.scale(0.5))
       }
@@ -192,7 +195,7 @@ export const TextMesh = ({
 // create react element
 export const ThreeCanvas = () => {
   const ref = useRef(null)
-  let i = init({ gravity: new cannon.Vec3(0, 0, 0) })
+  let i = init({ gravity: new CANNON.Vec3(0, 0, 0) })
   const resolve = () =>
     Resize(i, ref.current.offsetWidth, ref.current.offsetHeight)
   useEffect(() => {
