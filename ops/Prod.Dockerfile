@@ -24,7 +24,7 @@ RUN npm i --production && mkdir - p dist
 # IMPORT COMPILED AND WRITE ENV FOR DEBUGGGING
 COPY index.js ./
 
-copy dist/* dist/
+copy dist/ dist/
 
 RUN printenv>.env 
 
