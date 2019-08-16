@@ -1,4 +1,4 @@
-const Fetch = require('node-fetch')
+// const Fetch = require('node-fetch')
 process.env.NODE_ENV = 'test'
 
 describe('Server', () => {

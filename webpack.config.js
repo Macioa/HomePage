@@ -13,10 +13,10 @@ module.exports = {
 
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        loader: 'webpack-remove-debug'
-      },
+      // {
+      //   test: /\.js$/,
+      //   loader: 'webpack-remove-debug'
+      // },
       {
         test: /\.ts(x?)$/,
         exclude: /node_modules/,

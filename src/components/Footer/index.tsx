@@ -1,6 +1,6 @@
 import React from 'react'
 
-import * as style from '../../styles.css'
+const style = require('../../styles.css')
 
 const footerLinks = [
   {
@@ -27,7 +27,6 @@ const footerLinks = [
   .filter(e => e.logo && e.url)
   .map((e, i) => (
     <a key={i} href={e.url} target='blank'>
-      {/* <SVG src={e.logo} className={style.footerLink} alt='test' /> */}
       <img src={e.logo} className={style.footerLink} alt='test' />
     </a>
   ))

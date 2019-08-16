@@ -13,7 +13,7 @@ describe('ThreeJS Component', () => {
 })
 
 describe('Footer Component', () => {
-  it('renders correctly', () => {
+  it('Matches snapshot', () => {
     let rendered = renderer.create(<Footer />)
     expect(rendered.toJSON()).toMatchSnapshot()
   })
