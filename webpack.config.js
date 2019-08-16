@@ -8,7 +8,10 @@ module.exports = {
   devtool: 'source-map',
 
   resolve: {
-    extensions: ['.js', '.ts', '.tsx']
+    extensions: ['.js', '.ts', '.tsx'],
+    alias: {
+      Images: path.resolve(__dirname, 'src/images')
+    }
   },
 
   module: {
@@ -69,6 +72,6 @@ module.exports = {
       template: './src/index.html',
       filename: './index.html'
     }),
-    new FaviconsWebpackPlugin('./src/images/macioa.png')
+    new FaviconsWebpackPlugin('Images/macioa.png')
   ]
 }
