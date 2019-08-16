@@ -14,6 +14,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        loader: 'webpack-remove-debug'
+      },
+      {
         test: /\.ts(x?)$/,
         exclude: /node_modules/,
         use: [
@@ -30,6 +34,14 @@ module.exports = {
           {
             loader: 'typings-for-css-modules-loader',
             options: { modules: true, namedExport: true }
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader'
           }
         ]
       },

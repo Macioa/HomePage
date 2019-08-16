@@ -121,7 +121,6 @@ export const AddToSim = (
 ): Obj[] => {
   if (!i.objects) i.objects = []
   return meshes.map(({ mesh, shape, startpos, mass, anchorgrav = null }) => {
-    // mesh.geometry.computeBoundingBox()
     let size = mesh.geometry.boundingBox.getSize(new Vector3()),
       maxBound = Object.values(size).sort((a, b) => b - a)[0],
       sp = startpos.length >= 3 ? startpos : [0, 0, 0]
@@ -195,7 +194,7 @@ export const TextMesh = ({
 //
 //
 // create react element
-export const ThreeCanvas = () => {
+export const ThreeCanvas = (props: any) => {
   const ref = useRef(null)
   let i = init({ gravity: new Vec3(0, 0, 0) })
   const resolve = () =>
@@ -209,5 +208,12 @@ export const ThreeCanvas = () => {
 
     Start(i)
   })
-  return <div ref={ref} style={{ width: '100%', height: '100%' }} id='3Scene' />
+  return (
+    <div
+      ref={ref}
+      style={{ width: '100%', height: '100%' }}
+      id='3Scene'
+      {...props}
+    />
+  )
 }
