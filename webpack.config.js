@@ -1,5 +1,5 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+// const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const path = require('path')
 module.exports = {
   mode: 'production',
@@ -10,16 +10,13 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
     alias: {
-      Images: path.resolve(__dirname, 'src/images')
+      Components: path.join(__dirname, 'src/components/'),
+      Images: path.join(__dirname, 'src/images/')
     }
   },
 
   module: {
     rules: [
-      // {
-      //   test: /\.js$/,
-      //   loader: 'webpack-remove-debug'
-      // },
       {
         test: /\.ts(x?)$/,
         exclude: /node_modules/,
@@ -71,7 +68,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html'
-    }),
-    new FaviconsWebpackPlugin('Images/macioa.png')
+    })
+    // new FaviconsWebpackPlugin('Images/macioa.png')
   ]
 }

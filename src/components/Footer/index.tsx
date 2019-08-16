@@ -4,7 +4,7 @@ const style = require('../../styles.css')
 
 const footerLinks = [
   {
-    logo: require('Images/linkedin2.svg'),
+    logo: require('Images/linkedin.svg'),
     url: 'https://linkedin.com/in/ryanwademontgomery'
   },
   {
@@ -12,15 +12,15 @@ const footerLinks = [
     url: 'https://profiles.generalassemb.ly/ryan-montgomery'
   },
   {
-    logo: require('Images/twitter2.svg'),
+    logo: require('Images/twitter.svg'),
     url: 'https://twitter.com/macioa_macioa'
   },
   {
-    logo: require('Images/github2.svg'),
+    logo: require('Images/github.svg'),
     url: 'https://github.com/Macioa'
   },
   {
-    logo: require('Images/mail2.svg'),
+    logo: require('Images/mail.svg'),
     url: 'mailto:development@ryanwademontgomery.com'
   }
 ]

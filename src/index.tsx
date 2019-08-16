@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import { ThreeCanvas } from './components/Three'
-import { Footer } from './components/Footer'
+import { ThreeCanvas } from 'Components/Three'
+import { Footer } from 'Components/Footer'
 
 import * as styles from './styles.css'
 
