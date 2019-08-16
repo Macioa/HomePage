@@ -79,7 +79,7 @@ app.get('*', (req, res, next) => {
 })
 SSLreroute.get('*', (req, res) => {
   inf(`Redirect ${req.headers['x-forwarded-for']} to https`)
-  res.redirect('https://ryanwademontgomery.com', err => (err ? er(err) : null))
+  res.redirect('https://ryanwademontgomery.com')
 })
 
 //Start servers
@@ -88,7 +88,7 @@ httpServer.listen(vars.HTTP_PORT, err =>
 )
 if (httpsServer)
   httpsServer.listen(vars.HTTPS_PORT, err =>
-    err ? er(err) : inf(`Https server listening on ${vars.HTTP_PORT}`)
+    err ? er(err) : inf(`Https server listening on ${vars.HTTPS_PORT}`)
   )
 
 module.exports = {
