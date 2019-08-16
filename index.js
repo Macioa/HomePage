@@ -77,10 +77,9 @@ app.get('*', (req, res, next) => {
   inf(`Sending index.html to ${req.headers['x-forwarded-for']}`)
   res.sendFile('index.html', { root: vars.ROOT }, err => (err ? er(err) : null))
 })
-SSLreroute.get('*', (req, res) => {
-  inf(`Redirect ${req.headers['x-forwarded-for']} to https`)
+SSLreroute.get('*', (req, res) =>
   res.redirect('https://ryanwademontgomery.com')
-})
+)
 
 //Start servers
 httpServer.listen(vars.HTTP_PORT, err =>
