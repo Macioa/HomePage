@@ -8,9 +8,15 @@ import {
   Vector3,
   Geometry,
   TextGeometry,
+  SphereGeometry,
   Material,
   MeshBasicMaterial,
-  Font
+  Font,
+  Raycaster,
+  Vector2,
+  Plane,
+  PlaneGeometry,
+  MeshLambertMaterial
 } from 'three'
 import { World, Body, Vec3, Sphere, Box } from 'cannon'
 
@@ -30,7 +36,11 @@ export interface Obj {
   startpos: number[]
   mass: number
   anchorgrav?: number
+  mousechase?: boolean
 }
+
+let mx = 0,
+  my = 0
 
 // create necessary objects for scene
 export const init = (
@@ -120,47 +130,54 @@ export const AddToSim = (
   defaultMass: number = 1000
 ): Obj[] => {
   if (!i.objects) i.objects = []
-  return meshes.map(({ mesh, shape, startpos, mass, anchorgrav = null }) => {
-    let size = mesh.geometry.boundingBox.getSize(new Vector3()),
-      maxBound = Object.values(size).sort((a, b) => b - a)[0],
-      sp = startpos.length >= 3 ? startpos : [0, 0, 0]
-    mass = mass ? mass : defaultMass
-    shape = shape.toLowerCase() === 'sphere' ? 'sphere' : 'box'
-    let cShape =
-        shape === 'sphere'
-          ? new Sphere(maxBound)
-          : new Box(new Vec3(size.x, size.y, size.z)),
-      body = new Body({
-        mass,
-        position: new Vec3(sp[0], sp[1], sp[2]),
-        shape: cShape
-      })
-    i.world.addBody(body)
-    i.scene.add(mesh)
-    let res = { mesh, body, shape, startpos, mass, anchorgrav }
-    i.objects.push(res)
-    if (res.anchorgrav) {
-      res.body.preStep = () => {
-        //  vel + (startingpos-currentpos) * anchorgrav
-        res.body.velocity = res.body.velocity.vadd(
-          new Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
-            .vadd(res.body.position.negate())
-            .scale(res.anchorgrav)
-        )
-        // torq - eulerAngle
-        let q = new Vec3()
-        res.body.quaternion.toEuler(q)
-        res.body.torque = res.body.torque.vsub(q)
+  return meshes.map(
+    ({ mesh, shape, startpos, mass, anchorgrav = null, mousechase = null }) => {
+      let size = mesh.geometry.boundingBox.getSize(new Vector3()),
+        maxBound = Object.values(size).sort((a, b) => b - a)[0],
+        sp = startpos.length >= 3 ? startpos : [0, 0, 0]
+      mass = mass ? mass : defaultMass
+      shape = shape.toLowerCase() === 'sphere' ? 'sphere' : 'box'
+      let cShape =
+          shape === 'sphere'
+            ? new Sphere(maxBound)
+            : new Box(new Vec3(size.x, size.y, size.z)),
+        body = new Body({
+          mass,
+          position: new Vec3(sp[0], sp[1], sp[2]),
+          shape: cShape
+        })
+      i.world.addBody(body)
+      i.scene.add(mesh)
+      let res = { mesh, body, shape, startpos, mass, anchorgrav, mousechase }
+      i.objects.push(res)
+      if (res.anchorgrav) {
+        res.body.preStep = () => {
+          //  vel + (startingpos-currentpos) * anchorgrav
+          res.body.velocity = res.body.velocity.vadd(
+            new Vec3(res.startpos[0], res.startpos[1], res.startpos[2])
+              .vadd(res.body.position.negate())
+              .scale(res.anchorgrav)
+          )
+          // torq - eulerAngle
+          let q = new Vec3()
+          res.body.quaternion.toEuler(q)
+          res.body.torque = res.body.torque.vsub(q)
+        }
       }
+      if (res.mousechase)
+        res.body.preStep = () =>
+          (res.body.velocity = res.body.velocity.vadd(
+            new Vec3(mx, my, 0).vsub(res.body.position)
+          ))
+      return res
     }
-    return res
-  })
+  )
 }
 
 // create full objects from string
 export const TextMesh = ({
   text = 'Hello World',
-  spacing = 8,
+  spacing = 10,
   font = new Font(require('./fontdata/Moonglade.json')),
   material = new MeshBasicMaterial({ color: 0xffffff }),
   options = {}
@@ -190,6 +207,31 @@ export const TextMesh = ({
   })
 }
 
+export const MouseChasers = (
+  amount: number = 0,
+  radius: number = 3,
+  mass: number = 1
+): Obj[] => {
+  let chasers: Obj[] = [],
+    geo: Geometry = new SphereGeometry(radius),
+    mat = new MeshBasicMaterial({ color: 0xffffff })
+  for (let i = 0; i < amount; i++) {
+    let sp = new Vector3(window.innerWidth, window.innerHeight, 0)
+    let chaser = {
+      mesh: new Mesh(geo, mat),
+      startpos: [Math.random() * 300 - 600, Math.random() * 300 - 600, 0],
+      // startpos: Object.values(sp),
+      mass: mass,
+      shape: 'sphere',
+      mousechase: true
+    }
+    chaser.mesh.geometry.computeBoundingBox()
+    chasers.push(chaser)
+    console.log(chaser)
+  }
+  return chasers
+}
+
 //
 //
 //
@@ -203,10 +245,29 @@ export const ThreeCanvas = (props: any) => {
     resolve()
     ref.current.appendChild(i.renderer.domElement)
     window.addEventListener('resize', resolve)
+    let ray = new Raycaster(),
+      castPlane = new Mesh(
+        new PlaneGeometry(3000, 3000),
+        new MeshBasicMaterial({ color: 0x00ff00 })
+      )
+    castPlane.position.setZ(-200)
+    i.scene.add(castPlane)
+    console.log(castPlane)
+    window.addEventListener('mousemove', e => {
+      console.log(e.clientX, e.clientY)
+      ray.setFromCamera(new Vector2(e.clientX, e.clientY), i.camera)
+      console.log(ray.intersectObjects([castPlane]))
+      // { x, y } = point
+      // mx = x
+      // my = y
+      // console.log(mx, my)
+    })
 
     AddToSim(i, TextMesh({ text: 'Ryan Montgomery' }))
 
     Start(i)
+
+    AddToSim(i, MouseChasers(10))
   })
   return (
     <div
