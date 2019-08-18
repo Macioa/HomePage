@@ -24,6 +24,8 @@ export interface Instance {
   camera?: PerspectiveCamera
   renderer?: Renderer
   objects?: Obj[]
+  castPlane?: Mesh
+  ray?: Raycaster
 }
 
 export interface Obj {
@@ -37,7 +39,7 @@ export interface Obj {
 }
 
 let mx = 0,
-  my = 0
+  my = 900
 
 // create necessary objects for scene
 export const init = (
@@ -173,6 +175,44 @@ export const AddToSim = (
   )
 }
 
+export const initRaycaster = (i: Instance): void => {
+  let ray = new Raycaster(),
+    castPlane = new Mesh(
+      new BoxGeometry(30000, 30000, 10),
+      new MeshBasicMaterial({ color: 0x000000 })
+    )
+  castPlane.position.setZ(-200)
+  castPlane.name = 'castPlane'
+  i.scene.add(castPlane)
+  i.ray = ray
+  i.castPlane = castPlane
+}
+
+export const raycast = (e: any, i: Instance, mark: boolean = false) => {
+  i.ray.setFromCamera(
+    {
+      x: (e.clientX / window.innerWidth) * 2 - 1,
+      y: -(e.clientY / window.innerHeight) * 2 + 1
+    },
+    i.camera
+  )
+  let intersects = i.ray.intersectObject(i.castPlane),
+    { point } = intersects[0],
+    { x, y } = point
+  mx = x / (1 / (0.0035 * i.camera.position.z))
+  my = y / (1 / (0.0035 * i.camera.position.z))
+  if (mark) {
+    let bufferGeo = new SphereGeometry(5)
+    let pt: Mesh = new Mesh(
+      bufferGeo,
+      new MeshBasicMaterial({ color: 0x000000 })
+    )
+    pt.position.setX(mx)
+    pt.position.setY(my)
+    i.scene.add(pt)
+  }
+}
+
 // create full objects from string
 export const TextMesh = ({
   text = 'Hello World',
@@ -234,50 +274,24 @@ export const MouseChasers = (
 // create react element
 export const ThreeCanvas = (props: any) => {
   const ref = useRef(null)
+  // initialize 3js scene and cannon sim
   let i = init({ gravity: new Vec3(0, 0, 0) })
   const resolve = () =>
     Resize(i, ref.current.offsetWidth, ref.current.offsetHeight)
   useEffect(() => {
     resolve()
+    // initialize webgl and attach to dom
     ref.current.appendChild(i.renderer.domElement)
     window.addEventListener('resize', resolve)
     window.addEventListener('orientationchange', resolve)
-    let ray = new Raycaster(),
-      castPlane = new Mesh(
-        new BoxGeometry(30000, 30000, 10),
-        new MeshBasicMaterial({ color: 0x000000 })
-      )
-    castPlane.position.setZ(-200)
-    castPlane.name = 'castPlane'
-    i.scene.add(castPlane)
-
-    window.addEventListener('mousemove', e => {
-      ray.setFromCamera(
-        {
-          x: (e.clientX / window.innerWidth) * 2 - 1,
-          y: -(e.clientY / window.innerHeight) * 2 + 1
-        },
-        i.camera
-      )
-      let intersects = ray.intersectObject(castPlane),
-        { point } = intersects[0],
-        { x, y } = point
-      mx = x / (1 / (0.0035 * i.camera.position.z))
-      my = y / (1 / (0.0035 * i.camera.position.z))
-      // let bufferGeo = new SphereGeometry(5)
-      // let pt: Mesh = new Mesh(
-      //   bufferGeo,
-      //   new MeshBasicMaterial({ color: 0x000000 })
-      // )
-      // pt.position.setX(mx)
-      // pt.position.setY(my)
-      // i.scene.add(pt)
-    })
-
+    // initialize raycaster and attach to move events
+    initRaycaster(i)
+    window.addEventListener('mousemove', e => raycast(e, i))
+    window.addEventListener('touchend', e => raycast(e, i))
+    window.addEventListener('touchmove', e => raycast(e, i))
+    // add objects to simulation and start
     AddToSim(i, TextMesh({ text: 'Ryan Montgomery' }))
-
     Start(i)
-
     AddToSim(i, MouseChasers(10))
   })
   return (
