@@ -241,6 +241,7 @@ export const ThreeCanvas = (props: any) => {
     resolve()
     ref.current.appendChild(i.renderer.domElement)
     window.addEventListener('resize', resolve)
+    window.addEventListener('orientationchange', resolve)
     let ray = new Raycaster(),
       castPlane = new Mesh(
         new BoxGeometry(30000, 30000, 10),
