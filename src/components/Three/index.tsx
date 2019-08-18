@@ -13,10 +13,7 @@ import {
   MeshBasicMaterial,
   Font,
   Raycaster,
-  Vector2,
-  Plane,
-  PlaneGeometry,
-  MeshLambertMaterial
+  BoxGeometry
 } from 'three'
 import { World, Body, Vec3, Sphere, Box } from 'cannon'
 
@@ -36,7 +33,7 @@ export interface Obj {
   startpos: number[]
   mass: number
   anchorgrav?: number
-  mousechase?: boolean
+  mousegrav?: number
 }
 
 let mx = 0,
@@ -131,7 +128,7 @@ export const AddToSim = (
 ): Obj[] => {
   if (!i.objects) i.objects = []
   return meshes.map(
-    ({ mesh, shape, startpos, mass, anchorgrav = null, mousechase = null }) => {
+    ({ mesh, shape, startpos, mass, anchorgrav = null, mousegrav = null }) => {
       let size = mesh.geometry.boundingBox.getSize(new Vector3()),
         maxBound = Object.values(size).sort((a, b) => b - a)[0],
         sp = startpos.length >= 3 ? startpos : [0, 0, 0]
@@ -148,7 +145,7 @@ export const AddToSim = (
         })
       i.world.addBody(body)
       i.scene.add(mesh)
-      let res = { mesh, body, shape, startpos, mass, anchorgrav, mousechase }
+      let res = { mesh, body, shape, startpos, mass, anchorgrav, mousegrav }
       i.objects.push(res)
       if (res.anchorgrav) {
         res.body.preStep = () => {
@@ -164,11 +161,13 @@ export const AddToSim = (
           res.body.torque = res.body.torque.vsub(q)
         }
       }
-      if (res.mousechase)
+      if (res.mousegrav)
         res.body.preStep = () =>
-          (res.body.velocity = res.body.velocity.vadd(
-            new Vec3(mx, my, 0).vsub(res.body.position)
-          ))
+          (res.body.velocity = res.body.velocity
+            .scale(1 - res.mousegrav / 2)
+            .vadd(
+              new Vec3(mx, my, 0).vsub(res.body.position).mult(res.mousegrav)
+            ))
       return res
     }
   )
@@ -197,7 +196,7 @@ export const TextMesh = ({
     let res = {
       mesh: m.mesh,
       shape: 'box',
-      mass: 1,
+      mass: 100,
       startpos: [currentpos + m.width / 2, 0, 0],
       anchorgrav: 0.2,
       ...options
@@ -209,25 +208,22 @@ export const TextMesh = ({
 
 export const MouseChasers = (
   amount: number = 0,
-  radius: number = 3,
-  mass: number = 1
+  radius: number = 0.25,
+  mass: number = 10
 ): Obj[] => {
   let chasers: Obj[] = [],
     geo: Geometry = new SphereGeometry(radius),
-    mat = new MeshBasicMaterial({ color: 0xffffff })
+    mat = new MeshBasicMaterial({ color: 0xd3d3d3 })
   for (let i = 0; i < amount; i++) {
-    let sp = new Vector3(window.innerWidth, window.innerHeight, 0)
     let chaser = {
       mesh: new Mesh(geo, mat),
-      startpos: [Math.random() * 300 - 600, Math.random() * 300 - 600, 0],
-      // startpos: Object.values(sp),
+      startpos: [Math.random() * 300 - 600, Math.random() * 300 - 600 + 900, 0],
       mass: mass,
       shape: 'sphere',
-      mousechase: true
+      mousegrav: 0.025
     }
     chaser.mesh.geometry.computeBoundingBox()
     chasers.push(chaser)
-    console.log(chaser)
   }
   return chasers
 }
@@ -247,20 +243,34 @@ export const ThreeCanvas = (props: any) => {
     window.addEventListener('resize', resolve)
     let ray = new Raycaster(),
       castPlane = new Mesh(
-        new PlaneGeometry(3000, 3000),
-        new MeshBasicMaterial({ color: 0x00ff00 })
+        new BoxGeometry(30000, 30000, 10),
+        new MeshBasicMaterial({ color: 0x000000 })
       )
     castPlane.position.setZ(-200)
+    castPlane.name = 'castPlane'
     i.scene.add(castPlane)
-    console.log(castPlane)
+
     window.addEventListener('mousemove', e => {
-      console.log(e.clientX, e.clientY)
-      ray.setFromCamera(new Vector2(e.clientX, e.clientY), i.camera)
-      console.log(ray.intersectObjects([castPlane]))
-      // { x, y } = point
-      // mx = x
-      // my = y
-      // console.log(mx, my)
+      ray.setFromCamera(
+        {
+          x: (e.clientX / window.innerWidth) * 2 - 1,
+          y: -(e.clientY / window.innerHeight) * 2 + 1
+        },
+        i.camera
+      )
+      let intersects = ray.intersectObject(castPlane),
+        { point } = intersects[0],
+        { x, y } = point
+      mx = x / (1 / (0.0035 * i.camera.position.z))
+      my = y / (1 / (0.0035 * i.camera.position.z))
+      // let bufferGeo = new SphereGeometry(5)
+      // let pt: Mesh = new Mesh(
+      //   bufferGeo,
+      //   new MeshBasicMaterial({ color: 0x000000 })
+      // )
+      // pt.position.setX(mx)
+      // pt.position.setY(my)
+      // i.scene.add(pt)
     })
 
     AddToSim(i, TextMesh({ text: 'Ryan Montgomery' }))
