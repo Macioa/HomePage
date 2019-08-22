@@ -38,8 +38,9 @@ export interface Obj {
   mousegrav?: number
 }
 
+// initialize global targets
 let mx = 0,
-  my = 900
+  my = 1100
 
 // create necessary objects for scene
 export const init = (
@@ -53,7 +54,7 @@ export const init = (
       0.1,
       1000
     ),
-    renderer = new WebGLRenderer()
+    renderer = new WebGLRenderer({ antialias: true })
   }: Instance = {},
   camerapos = [0, 0, 45]
 ): Instance => {
@@ -189,6 +190,7 @@ export const initRaycaster = (i: Instance): void => {
 }
 
 export const raycast = (e: any, i: Instance, mark: boolean = false) => {
+  e.preventDefault()
   i.ray.setFromCamera(
     {
       x: (e.clientX / window.innerWidth) * 2 - 1,
@@ -282,13 +284,12 @@ export const ThreeCanvas = (props: any) => {
     resolve()
     // initialize webgl and attach to dom
     ref.current.appendChild(i.renderer.domElement)
-    window.addEventListener('resize', resolve)
-    window.addEventListener('orientationchange', resolve)
+    let events = ['resize', 'orientationchange']
+    events.forEach(s => window.addEventListener(s, resolve))
     // initialize raycaster and attach to move events
     initRaycaster(i)
-    window.addEventListener('mousemove', e => raycast(e, i))
-    window.addEventListener('touchend', e => raycast(e, i))
-    window.addEventListener('touchmove', e => raycast(e, i))
+    events = ['click', 'mousemove', 'touchstart', 'touchmove', 'touchend']
+    events.forEach(s => window.addEventListener(s, e => raycast(e, i)))
     // add objects to simulation and start
     AddToSim(i, TextMesh({ text: 'Ryan Montgomery' }))
     Start(i)
