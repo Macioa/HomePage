@@ -289,7 +289,7 @@ export const ThreeCanvas = (props: any) => {
     // initialize raycaster and attach to move events
     initRaycaster(i)
     events = ['click', 'mousemove', 'touchstart', 'touchmove', 'touchend']
-    events.forEach(s => window.addEventListener(s, e => raycast(e, i), false))
+    events.forEach(s => window.addEventListener(s, e => raycast(e, i), true))
     // add objects to simulation and start
     AddToSim(i, TextMesh({ text: 'Ryan Montgomery' }))
     Start(i)
