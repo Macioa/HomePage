@@ -1,10 +1,7 @@
 .threej {
-  border-width: 2px;
-  border-style: solid;
-  border-color: navajowhite;
   z-index: 0;
   position: fixed;
-  margin: 0px 0px 0px;
+  margin: 0;
 }
 
 .footer {
@@ -24,4 +21,13 @@
 .footer img {
   color: white;
   fill: currentColor;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
 }
