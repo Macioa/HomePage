@@ -5,6 +5,7 @@ import {
   Renderer,
   Mesh,
   WebGLRenderer,
+  Vector2,
   Vector3,
   Geometry,
   TextGeometry,
@@ -26,6 +27,7 @@ export interface Instance {
   objects?: Obj[]
   castPlane?: Mesh
   ray?: Raycaster
+  mouse?: Vector2
 }
 
 export interface Obj {
@@ -37,10 +39,6 @@ export interface Obj {
   anchorgrav?: number
   mousegrav?: number
 }
-
-// initialize global targets
-let mx = 0,
-  my = 1100
 
 // create necessary objects for scene
 export const init = (
@@ -60,7 +58,14 @@ export const init = (
 ): Instance => {
   camera.position.set(camerapos[0], camerapos[1], camerapos[2])
   world.gravity = gravity
-  return { world, gravity, scene, camera, renderer }
+  return {
+    world,
+    gravity,
+    scene,
+    camera,
+    renderer,
+    mouse: new Vector2(0, 1100)
+  }
 }
 
 // resize render and reproject aspect ratio for camera
@@ -169,7 +174,9 @@ export const AddToSim = (
           (res.body.velocity = res.body.velocity
             .scale(1 - res.mousegrav / 2)
             .vadd(
-              new Vec3(mx, my, 0).vsub(res.body.position).mult(res.mousegrav)
+              new Vec3(i.mouse.x, i.mouse.y, 0)
+                .vsub(res.body.position)
+                .mult(res.mousegrav)
             ))
       return res
     }
@@ -201,16 +208,19 @@ export const raycast = (e: any, i: Instance, mark: boolean = false) => {
   let intersects = i.ray.intersectObject(i.castPlane),
     { point } = intersects[0],
     { x, y } = point
-  mx = x / (1 / (0.0035 * i.camera.position.z))
-  my = y / (1 / (0.0035 * i.camera.position.z))
+  i.mouse = new Vector2(
+    x / (1 / (0.0035 * i.camera.position.z)),
+    y / (1 / (0.0035 * i.camera.position.z))
+  )
+
   if (mark) {
     let bufferGeo = new SphereGeometry(5)
     let pt: Mesh = new Mesh(
       bufferGeo,
       new MeshBasicMaterial({ color: 0x000000 })
     )
-    pt.position.setX(mx)
-    pt.position.setY(my)
+    pt.position.setX(i.mouse.x)
+    pt.position.setY(i.mouse.y)
     i.scene.add(pt)
   }
 }

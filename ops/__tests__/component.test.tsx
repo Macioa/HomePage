@@ -5,7 +5,7 @@ import { Footer } from '../../src/components/Footer'
 
 describe('ThreeJS Component', () => {
   it('Initializes an instance', () => {
-    expect(Object.keys(init({ renderer: null })).length).toEqual(5)
+    expect(Object.keys(init({ renderer: null })).length).toEqual(6)
   })
   it('TextMesh generates meshes', () => {
     expect(TextMesh({ text: 'Test' }).length).toEqual(4)
