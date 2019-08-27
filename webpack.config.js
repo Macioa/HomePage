@@ -4,7 +4,7 @@ module.exports = {
   mode: 'production',
 
   // Enable sourcemaps for debugging webpack's output.
-  devtool: 'source-map',
+  // devtool: 'source-map',
 
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
@@ -43,15 +43,12 @@ module.exports = {
             loader: 'file-loader'
           }
         ]
-      },
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        loader: 'source-map-loader'
-      },
-      {
-        enforce: 'post'
       }
+      // {
+      //   enforce: 'pre',
+      //   test: /\.js$/,
+      //   loader: 'source-map-loader'
+      // }
     ]
   },
 

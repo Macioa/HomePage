@@ -2,6 +2,7 @@
 dist
 dist/*
 *.d.ts
+ops/__tests__/__snapshots__/*.png
 
 # Typescript def
 typings

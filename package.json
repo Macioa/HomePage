@@ -35,7 +35,7 @@
       ".svg$": "<rootDir>/ops/svgHandler.js"
     },
     "transform": {
-      "\\.(ts|tsx|css)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "\\.(ts|tsx|css)$": "ts-jest"
     },
     "testRegex": "/__tests__/.*\\.(ts|tsx|js)$",
     "verbose": true
@@ -59,6 +59,7 @@
     "jest": "^24.8.0",
     "jest-css-modules": "^2.1.0",
     "jest-webgl-canvas-mock": "^0.2.2",
+    "puppeteer": "^1.19.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-test-renderer": "^16.8.6",

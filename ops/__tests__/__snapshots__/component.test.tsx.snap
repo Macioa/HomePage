@@ -4,46 +4,51 @@ exports[`Footer Component Matches snapshot 1`] = `
 <footer>
   <a
     href="https://linkedin.com/in/ryanwademontgomery"
+    id="LinkLinkedIn"
     target="blank"
   >
     <img
-      alt="test"
+      alt="Linked In"
       src="div"
     />
   </a>
   <a
     href="https://profiles.generalassemb.ly/ryan-montgomery"
+    id="LinkGeneralAssembly"
     target="blank"
   >
     <img
-      alt="test"
+      alt="General Assembly"
       src="div"
     />
   </a>
   <a
     href="https://twitter.com/macioa_macioa"
+    id="LinkTwitter"
     target="blank"
   >
     <img
-      alt="test"
+      alt="Twitter"
       src="div"
     />
   </a>
   <a
     href="https://github.com/Macioa"
+    id="LinkGithub"
     target="blank"
   >
     <img
-      alt="test"
+      alt="Github"
       src="div"
     />
   </a>
   <a
     href="mailto:development@ryanwademontgomery.com"
+    id="LinkMail"
     target="blank"
   >
     <img
-      alt="test"
+      alt="Mail"
       src="div"
     />
   </a>
