@@ -4,7 +4,7 @@
   "description": "HomePage Rewrite",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/jest",
+    "test": "./node_modules/.bin/jest --runInBand",
     "build": "npx webpack --silent || true && webpack -p",
     "build-full": "rm -rf dist && find src -name *.d.ts -type f -delete && npm run-script build && npm test -- --u",
     "dev": "npm run build-full && npm start",

@@ -19,6 +19,11 @@ const browserPromise = (async () => {
   return await puppeteer.launch(options)
 })()
 
+afterAll(async () => {
+  let browser = await Promise.resolve(browserPromise)
+  await browser.close()
+})
+
 describe('Render Test', () => {
   it('standard', async () => {
     let browser = await Promise.resolve(browserPromise)
@@ -26,7 +31,7 @@ describe('Render Test', () => {
     await page.goto('file:' + path.resolve(__dirname, '../../dist/index.html'))
     await page.screenshot({ path: `${output}standard.png` })
     await page.close()
-    await expect(page).toBeTruthy()
+    expect(page).toBeTruthy()
   })
   devices.forEach(async (d: any) => {
     it(`${d.name}`, async () => {
@@ -38,7 +43,7 @@ describe('Render Test', () => {
       )
       await page.screenshot({ path: `${output}${d.name}.png` })
       await page.close()
-      await expect(page).toBeTruthy()
+      expect(page).toBeTruthy()
     })
   })
 })
@@ -57,8 +62,8 @@ describe('Link Test', () => {
       new Promise(resolve => page.once('popup', resolve)).then(
         async (p: any) => {
           screen = await p.screenshot({ path: `${output}${link.props.id}.png` })
-          await expect(screen).toBeTruthy()
           await page.close()
+          expect(screen).toBeTruthy()
         }
       )
     })
