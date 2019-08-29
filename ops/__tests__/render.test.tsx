@@ -1,5 +1,6 @@
 import React from 'react'
 import { footerLinks } from '../../src/components/Footer'
+import fs from 'fs'
 
 const puppeteer = require('puppeteer'),
   options = {
@@ -29,9 +30,12 @@ describe('Render Test', () => {
     let browser = await Promise.resolve(browserPromise)
     let page = await browser.newPage()
     await page.goto('file:' + path.resolve(__dirname, '../../dist/index.html'))
-    await page.screenshot({ path: `${output}standard.png` })
+    let screenshot = await page.screenshot()
+    fs.writeFileSync(`${output}standard.png`, screenshot)
     await page.close()
-    expect(page).toBeTruthy()
+    await expect(
+      fs.readFileSync(`${output}standard.png`).byteLength
+    ).toBeGreaterThan(6000)
   })
   devices.forEach(async (d: any) => {
     it(`${d.name}`, async () => {
@@ -41,9 +45,12 @@ describe('Render Test', () => {
       await page.goto(
         'file:' + path.resolve(__dirname, '../../dist/index.html')
       )
-      await page.screenshot({ path: `${output}${d.name}.png` })
+      let screenshot = await page.screenshot()
+      fs.writeFileSync(`${output}${d.name}.png`, screenshot)
       await page.close()
-      expect(page).toBeTruthy()
+      await expect(
+        fs.readFileSync(`${output}${d.name}.png`).byteLength
+      ).toBeGreaterThan(6000)
     })
   })
 })
@@ -53,17 +60,19 @@ describe('Link Test', () => {
   links.forEach(async (link: any) => {
     it(`${link.props.id}`, async () => {
       let browser = await Promise.resolve(browserPromise)
-      let page = await browser.newPage(),
-        screen
+      let page = await browser.newPage()
       await page.goto(
         'file:' + path.resolve(__dirname, '../../dist/index.html')
       )
       await page.click(`#${link.props.id}`)
       new Promise(resolve => page.once('popup', resolve)).then(
         async (p: any) => {
-          screen = await p.screenshot({ path: `${output}${link.props.id}.png` })
-          await page.close()
-          expect(screen).toBeTruthy()
+          let screenshot = await p.screenshot()
+          fs.writeFileSync(`${output}${link.props.id}.png`, screenshot)
+          await p.close()
+          await expect(
+            fs.readFileSync(`${output}${link.props.id}.png`).byteLength
+          ).toBeGreaterThan(6000)
         }
       )
     })
