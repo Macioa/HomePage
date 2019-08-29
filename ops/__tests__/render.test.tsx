@@ -72,7 +72,7 @@ describe('Link Test', () => {
           await p.close()
           await expect(
             fs.readFileSync(`${output}${link.props.id}.png`).byteLength
-          ).toBeGreaterThan(6000)
+          ).toBeGreaterThan(3000)
         }
       )
     })
