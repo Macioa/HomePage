@@ -14,20 +14,21 @@ export const footerLinks = [
     logo: require('Images/linkedin.svg'),
     url: 'https://linkedin.com/in/ryanwademontgomery'
   },
+  // GA profiles is defunct. Link now redirects to hired.com
+  // {
+  //   name: 'General Assembly',
+  //   logo: require('Images/ga.svg'),
+  //   url: 'https://profiles.generalassemb.ly/ryan-montgomery'
+  // },
   {
-    name: 'General Assembly',
-    logo: require('Images/ga.svg'),
-    url: 'https://profiles.generalassemb.ly/ryan-montgomery'
+    name: 'Github',
+    logo: require('Images/github.svg'),
+    url: 'https://github.com/Macioa'
   },
   {
     name: 'Twitter',
     logo: require('Images/twitter.svg'),
     url: 'https://twitter.com/macioa_macioa'
-  },
-  {
-    name: 'Github',
-    logo: require('Images/github.svg'),
-    url: 'https://github.com/Macioa'
   },
   {
     name: 'Mail',
